@@ -57,6 +57,10 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        neonGreen: "hsl(var(--neon-green))",
+      },
+      boxShadow: {
+        neon: "var(--shadow-neon)",
       },
       borderRadius: {
         lg: "var(--radius)",

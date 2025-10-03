@@ -37,6 +37,9 @@ All colors MUST be HSL.
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+    
+    --neon-green: 120 100% 50%;
+    --shadow-neon: 0 0 20px hsl(var(--neon-green) / 0.5), 0 0 40px hsl(var(--neon-green) / 0.3);
 
     --sidebar-background: 0 0% 98%;
 
