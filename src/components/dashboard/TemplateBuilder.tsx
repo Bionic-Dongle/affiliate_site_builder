@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -23,9 +23,27 @@ interface SectionConfig {
   };
 }
 
+interface CTAButton {
+  id: string;
+  text: string;
+  affiliateUrl: string;
+  affiliateId: string;
+  trackingParams?: string;
+}
+
 const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  
+  const [ctaButtons, setCtaButtons] = useState<CTAButton[]>([
+    {
+      id: "cta-1",
+      text: "Shop Now",
+      affiliateUrl: "",
+      affiliateId: "",
+      trackingParams: "",
+    },
+  ]);
 
   const [sections, setSections] = useState<SectionConfig[]>([
     {
@@ -110,11 +128,35 @@ const TemplateBuilder = () => {
     );
   };
 
+  const addCTAButton = () => {
+    setCtaButtons((prev) => [
+      ...prev,
+      {
+        id: `cta-${prev.length + 1}`,
+        text: "Shop Now",
+        affiliateUrl: "",
+        affiliateId: "",
+        trackingParams: "",
+      },
+    ]);
+  };
+
+  const removeCTAButton = (id: string) => {
+    setCtaButtons((prev) => prev.filter((btn) => btn.id !== id));
+  };
+
+  const updateCTAButton = (id: string, field: keyof CTAButton, value: string) => {
+    setCtaButtons((prev) =>
+      prev.map((btn) => (btn.id === id ? { ...btn, [field]: value } : btn))
+    );
+  };
+
   const generateTemplateConfig = () => {
     const enabledSections = sections.filter((s) => s.enabled);
     const config = {
       siteName: "My Affiliate Site",
       template: "peak-inspire",
+      ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
         type: section.id,
         config: section.fields,
@@ -137,6 +179,76 @@ const TemplateBuilder = () => {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <LinkIcon className="h-5 w-5" />
+              Affiliate CTAs & Buttons
+            </CardTitle>
+            <CardDescription>Manage your affiliate links and call-to-actions</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {ctaButtons.map((button, index) => (
+              <div key={button.id} className="space-y-3 p-4 border rounded-lg bg-card">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">CTA Button {index + 1}</Label>
+                  {ctaButtons.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeCTAButton(button.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Button Text</Label>
+                  <Input
+                    placeholder="Shop Now, Buy Here, etc."
+                    value={button.text}
+                    onChange={(e) => updateCTAButton(button.id, "text", e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Affiliate URL</Label>
+                  <Input
+                    placeholder="https://example.com/product"
+                    value={button.affiliateUrl}
+                    onChange={(e) => updateCTAButton(button.id, "affiliateUrl", e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Affiliate ID</Label>
+                    <Input
+                      placeholder="your-affiliate-id"
+                      value={button.affiliateId}
+                      onChange={(e) => updateCTAButton(button.id, "affiliateId", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Tracking Params</Label>
+                    <Input
+                      placeholder="utm_source=..."
+                      value={button.trackingParams || ""}
+                      onChange={(e) => updateCTAButton(button.id, "trackingParams", e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <Button onClick={addCTAButton} variant="outline" className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add CTA Button
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
