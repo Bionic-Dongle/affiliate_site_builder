@@ -2,7 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ContentGenerator from "@/components/dashboard/ContentGenerator";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 import SiteManager from "@/components/dashboard/SiteManager";
-import { LayoutDashboard, FileJson, BarChart3, Globe } from "lucide-react";
+import TemplateBuilder from "@/components/dashboard/TemplateBuilder";
+import { LayoutDashboard, FileJson, BarChart3, Globe, Layout } from "lucide-react";
 
 const Dashboard = () => {
   return (
@@ -21,10 +22,14 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="generator" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
             <TabsTrigger value="generator" className="gap-2">
               <FileJson className="h-4 w-4" />
-              Generator
+              Content
+            </TabsTrigger>
+            <TabsTrigger value="template" className="gap-2">
+              <Layout className="h-4 w-4" />
+              Template
             </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -38,6 +43,10 @@ const Dashboard = () => {
 
           <TabsContent value="generator" className="mt-6">
             <ContentGenerator />
+          </TabsContent>
+
+          <TabsContent value="template" className="mt-6">
+            <TemplateBuilder />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6">
