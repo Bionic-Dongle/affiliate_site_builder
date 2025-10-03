@@ -3,20 +3,37 @@ import ContentGenerator from "@/components/dashboard/ContentGenerator";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 import SiteManager from "@/components/dashboard/SiteManager";
 import TemplateBuilder from "@/components/dashboard/TemplateBuilder";
-import { LayoutDashboard, FileJson, BarChart3, Globe, Layout } from "lucide-react";
+import { LayoutDashboard, FileJson, BarChart3, Globe, Layout, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "next-themes";
 
 const Dashboard = () => {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Affiliate Site Builder</h1>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <LayoutDashboard className="h-6 w-6 text-primary" />
+                <h1 className="text-2xl font-bold">Affiliate Site Builder</h1>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
+                Generate content, monitor performance, manage sites
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Generate content, monitor performance, manage sites
-          </p>
         </div>
       </header>
 
