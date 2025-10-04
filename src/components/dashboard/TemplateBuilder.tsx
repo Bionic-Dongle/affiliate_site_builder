@@ -72,6 +72,40 @@ const TemplateBuilder = () => {
       },
     },
     {
+      id: "blog-grid",
+      name: "Blog Posts Grid",
+      enabled: false,
+      fields: {
+        heading: "Latest Articles",
+        description: "Fresh insights and expert reviews",
+      },
+    },
+    {
+      id: "categories-bar",
+      name: "Categories/Tags Bar",
+      enabled: false,
+      fields: {
+        heading: "Browse Categories",
+      },
+    },
+    {
+      id: "search-bar",
+      name: "Search Bar",
+      enabled: false,
+      fields: {
+        heading: "Search",
+      },
+    },
+    {
+      id: "sidebar",
+      name: "Sidebar",
+      enabled: false,
+      fields: {
+        heading: "Popular Posts",
+        description: "Trending content and categories",
+      },
+    },
+    {
       id: "categories",
       name: "Category Grid",
       enabled: false,
