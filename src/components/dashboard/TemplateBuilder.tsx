@@ -50,12 +50,12 @@ const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   
-  const [typographyOpen, setTypographyOpen] = useState(true);
-  const [seoOpen, setSeoOpen] = useState(true);
-  const [advertisingOpen, setAdvertisingOpen] = useState(true);
-  const [siteComponentsOpen, setSiteComponentsOpen] = useState(true);
-  const [navbarOpen, setNavbarOpen] = useState(true);
-  const [ctaOpen, setCtaOpen] = useState(true);
+  const [typographyOpen, setTypographyOpen] = useState(false);
+  const [seoOpen, setSeoOpen] = useState(false);
+  const [advertisingOpen, setAdvertisingOpen] = useState(false);
+  const [siteComponentsOpen, setSiteComponentsOpen] = useState(false);
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const [ctaOpen, setCtaOpen] = useState(false);
   
   const [headingFont, setHeadingFont] = useState("Inter");
   const [bodyFont, setBodyFont] = useState("Inter");
