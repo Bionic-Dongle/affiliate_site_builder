@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -335,15 +335,25 @@ const TemplateBuilder = () => {
                 </CardTitle>
                 <CardDescription>Define which pages your site will have</CardDescription>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSitePagesOpen(!sitePagesOpen)}
-              >
-                <ChevronDown 
-                  className={`h-5 w-5 transition-transform duration-200 ${sitePagesOpen ? 'rotate-180' : ''}`}
-                />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open('/home', '_blank')}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Preview Site
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSitePagesOpen(!sitePagesOpen)}
+                >
+                  <ChevronDown 
+                    className={`h-5 w-5 transition-transform duration-200 ${sitePagesOpen ? 'rotate-180' : ''}`}
+                  />
+                </Button>
+              </div>
             </div>
           </CardHeader>
           {sitePagesOpen && (
