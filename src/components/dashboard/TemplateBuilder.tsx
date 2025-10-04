@@ -21,6 +21,13 @@ interface SectionConfig {
     buttonLink?: string;
     backgroundImage?: string;
     images?: string[];
+    adScript?: string;
+    adUnits?: {
+      headerBanner?: string;
+      sidebarTop?: string;
+      inContent?: string;
+      footer?: string;
+    };
   };
 }
 
@@ -142,6 +149,20 @@ const TemplateBuilder = () => {
       },
     },
     {
+      id: "ad-zones",
+      name: "Ad Zones",
+      enabled: false,
+      fields: {
+        adScript: "",
+        adUnits: {
+          headerBanner: "",
+          sidebarTop: "",
+          inContent: "",
+          footer: "",
+        },
+      },
+    },
+    {
       id: "footer",
       name: "Footer",
       enabled: false,
@@ -157,7 +178,7 @@ const TemplateBuilder = () => {
     );
   };
 
-  const updateField = (sectionId: string, field: string, value: string) => {
+  const updateField = (sectionId: string, field: string, value: any) => {
     setSections((prev) =>
       prev.map((section) =>
         section.id === sectionId
@@ -451,6 +472,74 @@ const TemplateBuilder = () => {
                           />
                         ))}
                       </div>
+                    )}
+
+                    {section.fields.adScript !== undefined && (
+                      <>
+                        <div className="space-y-1.5">
+                          <Label className="text-sm">Ad Network Script</Label>
+                          <Textarea
+                            placeholder="Paste your ad network script (AdSense, Mediavine, etc.)"
+                            rows={3}
+                            value={section.fields.adScript}
+                            onChange={(e) =>
+                              updateField(section.id, "adScript", e.target.value)
+                            }
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Ad Unit Placements</Label>
+                          
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">Header Banner (728x90)</Label>
+                            <Input
+                              placeholder="Ad Unit ID"
+                              value={section.fields.adUnits?.headerBanner || ""}
+                              onChange={(e) => {
+                                const newAdUnits = { ...section.fields.adUnits, headerBanner: e.target.value };
+                                updateField(section.id, "adUnits", newAdUnits);
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">Sidebar Top (300x250)</Label>
+                            <Input
+                              placeholder="Ad Unit ID"
+                              value={section.fields.adUnits?.sidebarTop || ""}
+                              onChange={(e) => {
+                                const newAdUnits = { ...section.fields.adUnits, sidebarTop: e.target.value };
+                                updateField(section.id, "adUnits", newAdUnits);
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">In-Content (Responsive)</Label>
+                            <Input
+                              placeholder="Ad Unit ID"
+                              value={section.fields.adUnits?.inContent || ""}
+                              onChange={(e) => {
+                                const newAdUnits = { ...section.fields.adUnits, inContent: e.target.value };
+                                updateField(section.id, "adUnits", newAdUnits);
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <Label className="text-xs">Footer (728x90)</Label>
+                            <Input
+                              placeholder="Ad Unit ID"
+                              value={section.fields.adUnits?.footer || ""}
+                              onChange={(e) => {
+                                const newAdUnits = { ...section.fields.adUnits, footer: e.target.value };
+                                updateField(section.id, "adUnits", newAdUnits);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
