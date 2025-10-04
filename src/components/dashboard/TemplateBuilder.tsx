@@ -114,6 +114,10 @@ const TemplateBuilder = () => {
   });
   
   const [navbarEnabled, setNavbarEnabled] = useState(true);
+  const [navbarShowSearch, setNavbarShowSearch] = useState(true);
+  const [navbarLogoType, setNavbarLogoType] = useState<"text" | "image">("text");
+  const [navbarLogoText, setNavbarLogoText] = useState("My Site");
+  const [navbarLogoImage, setNavbarLogoImage] = useState("");
   const [navItems, setNavItems] = useState<NavItem[]>([
     { id: "nav-1", label: "Home", path: "/" },
     { id: "nav-2", label: "Reviews", path: "/reviews" },
@@ -314,7 +318,14 @@ const TemplateBuilder = () => {
         head: headScripts,
         body: bodyScripts,
       },
-      navbar: navbarEnabled ? { enabled: true, items: navItems } : { enabled: false },
+      navbar: navbarEnabled ? { 
+        enabled: true, 
+        items: navItems,
+        showSearch: navbarShowSearch,
+        logoType: navbarLogoType,
+        logoText: navbarLogoText,
+        logoImage: navbarLogoImage,
+      } : { enabled: false },
       ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
         type: section.id,
@@ -486,6 +497,10 @@ const TemplateBuilder = () => {
     if (config?.navbar) {
       setNavbarEnabled(config.navbar.enabled);
       setNavItems(config.navbar.items || navItems);
+      setNavbarShowSearch(config.navbar.showSearch !== false);
+      setNavbarLogoType(config.navbar.logoType || "text");
+      setNavbarLogoText(config.navbar.logoText || "My Site");
+      setNavbarLogoImage(config.navbar.logoImage || "");
     }
     if (config?.ctaButtons) {
       setCtaButtons(config.ctaButtons);
@@ -1299,6 +1314,54 @@ const TemplateBuilder = () => {
 
             {navbarEnabled && (
               <>
+                <div className="space-y-3 pb-4 border-b">
+                  <Label className="text-sm font-medium">Logo Configuration</Label>
+                  <RadioGroup value={navbarLogoType} onValueChange={(value: "text" | "image") => setNavbarLogoType(value)}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="text" id="logo-text" />
+                      <Label htmlFor="logo-text" className="cursor-pointer">Text Logo</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="image" id="logo-image" />
+                      <Label htmlFor="logo-image" className="cursor-pointer">Image Logo</Label>
+                    </div>
+                  </RadioGroup>
+                  
+                  {navbarLogoType === "text" ? (
+                    <div className="space-y-1.5">
+                      <Label className="text-sm">Logo Text</Label>
+                      <Input
+                        placeholder="My Site"
+                        value={navbarLogoText}
+                        onChange={(e) => setNavbarLogoText(e.target.value)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <Label className="text-sm">Logo Image URL</Label>
+                      <Input
+                        placeholder="https://example.com/logo.png"
+                        value={navbarLogoImage}
+                        onChange={(e) => setNavbarLogoImage(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Recommended: 40-50px height, transparent PNG
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3 pb-3 border-b">
+                  <Checkbox
+                    id="navbar-show-search"
+                    checked={navbarShowSearch}
+                    onCheckedChange={(checked) => setNavbarShowSearch(!!checked)}
+                  />
+                  <Label htmlFor="navbar-show-search" className="text-sm font-medium cursor-pointer">
+                    Show Search Bar
+                  </Label>
+                </div>
+
                 {navItems.map((item, index) => (
                   <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-muted/50">
                     <div className="flex items-center justify-between">

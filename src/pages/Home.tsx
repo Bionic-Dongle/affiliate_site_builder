@@ -13,6 +13,8 @@ const mockConfig = {
   navbar: {
     enabled: true,
     siteName: "My Site",
+    logoType: "text" as const,
+    logoImage: "",
     navItems: [
       { label: "Home", path: "/" },
       { label: "Reviews", path: "/reviews" },
@@ -61,6 +63,8 @@ const Home = () => {
       {config.navbar?.enabled && (
         <Navbar
           siteName={config.navbar.siteName}
+          logoType={config.navbar.logoType}
+          logoImage={config.navbar.logoImage}
           navItems={config.navbar.navItems}
           showSearch={config.navbar.showSearch}
         />

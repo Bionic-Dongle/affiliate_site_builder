@@ -10,11 +10,19 @@ interface NavItem {
 
 interface NavbarProps {
   siteName?: string;
+  logoImage?: string;
+  logoType?: "text" | "image";
   navItems?: NavItem[];
   showSearch?: boolean;
 }
 
-const Navbar = ({ siteName = "My Site", navItems = [], showSearch = true }: NavbarProps) => {
+const Navbar = ({ 
+  siteName = "My Site", 
+  logoImage,
+  logoType = "text",
+  navItems = [], 
+  showSearch = true 
+}: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -24,8 +32,16 @@ const Navbar = ({ siteName = "My Site", navItems = [], showSearch = true }: Navb
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="/" className="text-xl font-bold text-foreground">
-              {siteName}
+            <a href="/" className="flex items-center">
+              {logoType === "image" && logoImage ? (
+                <img 
+                  src={logoImage} 
+                  alt={siteName} 
+                  className="h-10 w-auto"
+                />
+              ) : (
+                <span className="text-xl font-bold text-foreground">{siteName}</span>
+              )}
             </a>
           </div>
 
