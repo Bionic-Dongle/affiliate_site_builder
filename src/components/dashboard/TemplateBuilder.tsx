@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus } from "lucide-react";
+import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus, Code } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -65,6 +65,7 @@ const TemplateBuilder = () => {
   const [typographyOpen, setTypographyOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
   const [advertisingOpen, setAdvertisingOpen] = useState(false);
+  const [customScriptsOpen, setCustomScriptsOpen] = useState(false);
   const [siteComponentsOpen, setSiteComponentsOpen] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [ctaOpen, setCtaOpen] = useState(false);
@@ -78,6 +79,9 @@ const TemplateBuilder = () => {
   const [posthogKey, setPosthogKey] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [searchConsoleCode, setSearchConsoleCode] = useState("");
+  
+  const [headScripts, setHeadScripts] = useState("");
+  const [bodyScripts, setBodyScripts] = useState("");
   
   const [landingPageMode, setLandingPageMode] = useState(false);
   const [enabledPages, setEnabledPages] = useState({
@@ -311,6 +315,10 @@ const TemplateBuilder = () => {
         adNetworkScript: adNetworkScript,
         placements: adPlacements,
       },
+      customScripts: {
+        head: headScripts,
+        body: bodyScripts,
+      },
       navbar: navbarEnabled ? { enabled: true, items: navItems } : { enabled: false },
       ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
@@ -355,6 +363,8 @@ const TemplateBuilder = () => {
     setGoogleAnalyticsId("");
     setSearchConsoleCode("");
     setAdNetworkScript("");
+    setHeadScripts("");
+    setBodyScripts("");
     setNavItems([
       { id: "nav-1", label: "Home", path: "/" },
       { id: "nav-2", label: "Reviews", path: "/reviews" },
@@ -473,6 +483,10 @@ const TemplateBuilder = () => {
     if (config?.advertising) {
       setAdNetworkScript(config.advertising.adNetworkScript || "");
       setAdPlacements(config.advertising.placements || adPlacements);
+    }
+    if (config?.customScripts) {
+      setHeadScripts(config.customScripts.head || "");
+      setBodyScripts(config.customScripts.body || "");
     }
     if (config?.navbar) {
       setNavbarEnabled(config.navbar.enabled);
@@ -956,6 +970,82 @@ const TemplateBuilder = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </CardContent>
+          )}
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Code className="h-5 w-5" />
+                  Custom Scripts
+                </CardTitle>
+                <CardDescription>Add tracking & custom scripts to all pages</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setCustomScriptsOpen(!customScriptsOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${customScriptsOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
+          </CardHeader>
+          {customScriptsOpen && (
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Head Scripts</Label>
+              <p className="text-xs text-muted-foreground">
+                Loads early (analytics, tracking, meta tags) - goes in &lt;head&gt;
+              </p>
+              <Textarea
+                placeholder={`<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_MEASUREMENT_ID');
+</script>`}
+                rows={8}
+                value={headScripts}
+                onChange={(e) => setHeadScripts(e.target.value)}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Body Scripts</Label>
+              <p className="text-xs text-muted-foreground">
+                Loads at end of page (chatbots, widgets) - goes before &lt;/body&gt;
+              </p>
+              <Textarea
+                placeholder={`<!-- Example: Chat widget -->
+<script>
+  (function(){
+    // Your chat widget code here
+  })();
+</script>`}
+                rows={6}
+                value={bodyScripts}
+                onChange={(e) => setBodyScripts(e.target.value)}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            <div className="p-3 bg-accent rounded-lg">
+              <p className="text-xs font-medium mb-1">Examples:</p>
+              <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+                <li>Google Analytics / Tag Manager (Head)</li>
+                <li>Facebook Pixel (Head)</li>
+                <li>PostHog, Mixpanel (Head)</li>
+                <li>Intercom, Crisp Chat (Body)</li>
+                <li>Custom fonts from Google/Adobe (Head)</li>
+              </ul>
             </div>
           </CardContent>
           )}
