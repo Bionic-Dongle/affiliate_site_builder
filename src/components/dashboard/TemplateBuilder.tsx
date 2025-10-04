@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -52,6 +53,22 @@ const TemplateBuilder = () => {
   
   const [headingFont, setHeadingFont] = useState("Inter");
   const [bodyFont, setBodyFont] = useState("Inter");
+  
+  const [seoTitle, setSeoTitle] = useState("");
+  const [seoDescription, setSeoDescription] = useState("");
+  const [seoImage, setSeoImage] = useState("");
+  const [posthogKey, setPosthogKey] = useState("");
+  const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
+  const [searchConsoleCode, setSearchConsoleCode] = useState("");
+  
+  const [adNetworkScript, setAdNetworkScript] = useState("");
+  const [adPlacements, setAdPlacements] = useState({
+    hero: { enabled: false, position: "bottom" },
+    blogGrid: { enabled: false, position: "middle" },
+    sidebar: { enabled: false, position: "top" },
+    footer: { enabled: false, position: "top" },
+    inContent: { enabled: false, position: "middle" },
+  });
   
   const [navbarEnabled, setNavbarEnabled] = useState(true);
   const [navItems, setNavItems] = useState<NavItem[]>([
@@ -149,20 +166,6 @@ const TemplateBuilder = () => {
       },
     },
     {
-      id: "ad-zones",
-      name: "Ad Zones",
-      enabled: false,
-      fields: {
-        adScript: "",
-        adUnits: {
-          headerBanner: "",
-          sidebarTop: "",
-          inContent: "",
-          footer: "",
-        },
-      },
-    },
-    {
       id: "footer",
       name: "Footer",
       enabled: false,
@@ -254,6 +257,18 @@ const TemplateBuilder = () => {
         headingFont: headingFont,
         bodyFont: bodyFont,
       },
+      seo: {
+        defaultTitle: seoTitle,
+        defaultDescription: seoDescription,
+        ogImage: seoImage,
+        posthogKey: posthogKey,
+        googleAnalyticsId: googleAnalyticsId,
+        searchConsoleVerification: searchConsoleCode,
+      },
+      advertising: {
+        adNetworkScript: adNetworkScript,
+        placements: adPlacements,
+      },
       navbar: navbarEnabled ? { enabled: true, items: navItems } : { enabled: false },
       ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
@@ -333,6 +348,143 @@ const TemplateBuilder = () => {
               <p className="font-medium mb-1">Font Preview:</p>
               <p>Headings: <span className="font-semibold">{headingFont}</span></p>
               <p>Body text: <span>{bodyFont}</span></p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Search className="h-5 w-5" />
+              SEO Settings
+            </CardTitle>
+            <CardDescription>Search engine optimization and analytics</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Default Site Title</Label>
+              <Input
+                placeholder="Best Product Reviews & Buying Guides"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Default Meta Description</Label>
+              <Textarea
+                placeholder="Expert reviews and honest recommendations..."
+                rows={2}
+                maxLength={160}
+                value={seoDescription}
+                onChange={(e) => setSeoDescription(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">{seoDescription.length}/160 characters</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Social Sharing Image (OG Image)</Label>
+              <Input
+                placeholder="https://example.com/og-image.jpg"
+                value={seoImage}
+                onChange={(e) => setSeoImage(e.target.value)}
+              />
+            </div>
+
+            <div className="border-t pt-4 space-y-3">
+              <Label className="text-sm font-medium">Analytics & Tracking</Label>
+              
+              <div className="space-y-2">
+                <Label className="text-xs">PostHog Project Key</Label>
+                <Input
+                  placeholder="phc_..."
+                  value={posthogKey}
+                  onChange={(e) => setPosthogKey(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs">Google Analytics ID (Optional)</Label>
+                <Input
+                  placeholder="G-XXXXXXXXXX"
+                  value={googleAnalyticsId}
+                  onChange={(e) => setGoogleAnalyticsId(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs">Search Console Verification</Label>
+                <Input
+                  placeholder="google-site-verification code"
+                  value={searchConsoleCode}
+                  onChange={(e) => setSearchConsoleCode(e.target.value)}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Advertising & Ad Zones
+            </CardTitle>
+            <CardDescription>Configure ad network and placements</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Ad Network Script</Label>
+              <Textarea
+                placeholder="Paste your ad network script (AdSense, Mediavine, Ezoic, etc.)"
+                rows={3}
+                value={adNetworkScript}
+                onChange={(e) => setAdNetworkScript(e.target.value)}
+              />
+            </div>
+
+            <div className="border-t pt-4 space-y-4">
+              <Label className="text-sm font-medium">Ad Placements</Label>
+              
+              {Object.entries(adPlacements).map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      checked={value.enabled}
+                      onCheckedChange={(checked) => 
+                        setAdPlacements(prev => ({
+                          ...prev,
+                          [key]: { ...prev[key as keyof typeof prev], enabled: !!checked }
+                        }))
+                      }
+                    />
+                    <Label className="capitalize cursor-pointer">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </Label>
+                  </div>
+                  
+                  {value.enabled && (
+                    <Select 
+                      value={value.position}
+                      onValueChange={(val) => 
+                        setAdPlacements(prev => ({
+                          ...prev,
+                          [key]: { ...prev[key as keyof typeof prev], position: val }
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card z-50">
+                        <SelectItem value="top">Top</SelectItem>
+                        <SelectItem value="middle">Middle</SelectItem>
+                        <SelectItem value="bottom">Bottom</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -472,74 +624,6 @@ const TemplateBuilder = () => {
                           />
                         ))}
                       </div>
-                    )}
-
-                    {section.fields.adScript !== undefined && (
-                      <>
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">Ad Network Script</Label>
-                          <Textarea
-                            placeholder="Paste your ad network script (AdSense, Mediavine, etc.)"
-                            rows={3}
-                            value={section.fields.adScript}
-                            onChange={(e) =>
-                              updateField(section.id, "adScript", e.target.value)
-                            }
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium">Ad Unit Placements</Label>
-                          
-                          <div className="space-y-1.5">
-                            <Label className="text-xs">Header Banner (728x90)</Label>
-                            <Input
-                              placeholder="Ad Unit ID"
-                              value={section.fields.adUnits?.headerBanner || ""}
-                              onChange={(e) => {
-                                const newAdUnits = { ...section.fields.adUnits, headerBanner: e.target.value };
-                                updateField(section.id, "adUnits", newAdUnits);
-                              }}
-                            />
-                          </div>
-
-                          <div className="space-y-1.5">
-                            <Label className="text-xs">Sidebar Top (300x250)</Label>
-                            <Input
-                              placeholder="Ad Unit ID"
-                              value={section.fields.adUnits?.sidebarTop || ""}
-                              onChange={(e) => {
-                                const newAdUnits = { ...section.fields.adUnits, sidebarTop: e.target.value };
-                                updateField(section.id, "adUnits", newAdUnits);
-                              }}
-                            />
-                          </div>
-
-                          <div className="space-y-1.5">
-                            <Label className="text-xs">In-Content (Responsive)</Label>
-                            <Input
-                              placeholder="Ad Unit ID"
-                              value={section.fields.adUnits?.inContent || ""}
-                              onChange={(e) => {
-                                const newAdUnits = { ...section.fields.adUnits, inContent: e.target.value };
-                                updateField(section.id, "adUnits", newAdUnits);
-                              }}
-                            />
-                          </div>
-
-                          <div className="space-y-1.5">
-                            <Label className="text-xs">Footer (728x90)</Label>
-                            <Input
-                              placeholder="Ad Unit ID"
-                              value={section.fields.adUnits?.footer || ""}
-                              onChange={(e) => {
-                                const newAdUnits = { ...section.fields.adUnits, footer: e.target.value };
-                                updateField(section.id, "adUnits", newAdUnits);
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </>
                     )}
                   </div>
                 )}
