@@ -115,14 +115,13 @@ const Article = () => {
           </div>
         </div>
 
-        {/* Featured Image */}
-        <div className="container mx-auto px-4 max-w-4xl -mt-8">
-          <div className="aspect-video bg-muted rounded-lg shadow-lg"></div>
-        </div>
-
         {/* Article Content */}
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-[1fr_320px] gap-8 max-w-7xl mx-auto">
+            {/* Featured Image - Full Width Across Both Columns */}
+            <div className="lg:col-span-2 -mt-20 mb-8">
+              <div className="aspect-video bg-muted rounded-lg shadow-lg"></div>
+            </div>
             {/* Main Content */}
             <div className="max-w-3xl">
               {/* Social Share Buttons */}
