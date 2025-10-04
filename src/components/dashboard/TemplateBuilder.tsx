@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -258,23 +259,28 @@ const TemplateBuilder = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {sections.map((section) => (
-              <div key={section.id} className="space-y-3 pb-4 border-b last:border-0">
+              <Collapsible key={section.id} open={section.enabled} className="space-y-3 pb-4 border-b last:border-0">
                 <div className="flex items-center gap-3">
                   <Checkbox
                     id={section.id}
                     checked={section.enabled}
                     onCheckedChange={() => toggleSection(section.id)}
                   />
-                  <Label
-                    htmlFor={section.id}
-                    className="text-base font-medium cursor-pointer"
-                  >
-                    {section.name}
-                  </Label>
+                  <CollapsibleTrigger className="flex-1 flex items-center justify-between hover:opacity-70 transition-opacity">
+                    <Label
+                      htmlFor={section.id}
+                      className="text-base font-medium cursor-pointer flex-1 text-left"
+                    >
+                      {section.name}
+                    </Label>
+                    <ChevronDown 
+                      className={`h-4 w-4 transition-transform duration-200 ${section.enabled ? 'rotate-180' : ''}`}
+                    />
+                  </CollapsibleTrigger>
                 </div>
 
-                {section.enabled && (
-                  <div className="ml-7 space-y-3 pt-2">
+                <CollapsibleContent className="ml-7 space-y-3 pt-2">{section.enabled && (
+                  <>
                     {section.fields.heading !== undefined && (
                       <div className="space-y-1.5">
                         <Label className="text-sm">Heading</Label>
@@ -370,9 +376,10 @@ const TemplateBuilder = () => {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </>
                 )}
-              </div>
+                </CollapsibleContent>
+              </Collapsible>
             ))}
           </CardContent>
         </Card>
