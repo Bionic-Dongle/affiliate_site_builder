@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import Sidebar from "@/components/site/Sidebar";
@@ -5,8 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Clock, User, Share2, Facebook, Twitter, Linkedin, Mail, ArrowRight } from "lucide-react";
+import { CTARenderer, CTAPlacement, CTADefinition } from "@/components/site/CTAButton";
 
 const Article = () => {
+  // Mock CTA config - would come from template builder
+  const [ctaConfig] = useState({
+    ctaLibrary: [] as CTADefinition[],
+    landingCtaPlacements: [] as CTAPlacement[],
+  });
+
   // Mock article data
   const article = {
     title: "10 Essential Tips for Choosing the Perfect Running Shoes",
@@ -112,6 +120,14 @@ const Article = () => {
                 <span>{article.readTime}</span>
               </div>
             </div>
+            
+            {/* CTAs at position 0 - in article header */}
+            <CTARenderer 
+              placements={ctaConfig.landingCtaPlacements} 
+              ctaLibrary={ctaConfig.ctaLibrary} 
+              position={0}
+              className="mt-6"
+            />
           </div>
         </div>
 
@@ -140,6 +156,14 @@ const Article = () => {
                   <Mail className="h-4 w-4" />
                 </Button>
               </div>
+
+              {/* CTAs at position 1 - before article content */}
+              <CTARenderer 
+                placements={ctaConfig.landingCtaPlacements} 
+                ctaLibrary={ctaConfig.ctaLibrary} 
+                position={1}
+                className="mb-8"
+              />
 
               {/* Article Body */}
               <div className="prose prose-lg max-w-none">
@@ -199,6 +223,14 @@ const Article = () => {
                   Choosing the right running shoes is a personal journey. What works perfectly for one runner might not suit another. Take your time, do your research, and don't be afraid to try different options. Your perfect pair is out there!
                 </p>
               </div>
+
+              {/* CTAs at position 2 - after article content */}
+              <CTARenderer 
+                placements={ctaConfig.landingCtaPlacements} 
+                ctaLibrary={ctaConfig.ctaLibrary} 
+                position={2}
+                className="my-8"
+              />
 
               <Separator className="my-8" />
 

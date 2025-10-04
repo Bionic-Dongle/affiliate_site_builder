@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import SearchBar from "@/components/site/SearchBar";
@@ -6,8 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { CTARenderer, CTAPlacement, CTADefinition } from "@/components/site/CTAButton";
 
 const Blog = () => {
+  // Mock CTA config - would come from template builder
+  const [ctaConfig] = useState({
+    ctaLibrary: [] as CTADefinition[],
+    blogCtaPlacements: [] as CTAPlacement[],
+  });
+
   // Mock blog posts
   const posts = [
     {
@@ -120,6 +128,14 @@ const Blog = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Latest Articles</h1>
           <p className="text-xl text-muted-foreground mb-6">Expert reviews, buying guides, and product comparisons</p>
           
+          {/* CTAs at position 0 - in header */}
+          <CTARenderer 
+            placements={ctaConfig.blogCtaPlacements} 
+            ctaLibrary={ctaConfig.ctaLibrary} 
+            position={0}
+            className="mt-6"
+          />
+          
           {/* Search and Filter Bar */}
           <div className="flex flex-col md:flex-row gap-4 max-w-3xl">
             <Input 
@@ -147,6 +163,14 @@ const Blog = () => {
       {/* Main Content */}
       <section className="py-12 flex-1">
         <div className="container mx-auto px-4">
+          {/* CTAs at position 1 - before blog grid */}
+          <CTARenderer 
+            placements={ctaConfig.blogCtaPlacements} 
+            ctaLibrary={ctaConfig.ctaLibrary} 
+            position={1}
+            className="mb-8"
+          />
+          
           <div className="grid lg:grid-cols-[1fr_320px] gap-8">
             {/* Blog Posts Grid */}
             <div className="space-y-6">
@@ -190,6 +214,14 @@ const Blog = () => {
                   </div>
                 </article>
               ))}
+
+              {/* CTAs at position 2 - after blog posts */}
+              <CTARenderer 
+                placements={ctaConfig.blogCtaPlacements} 
+                ctaLibrary={ctaConfig.ctaLibrary} 
+                position={2}
+                className="my-8"
+              />
 
               {/* Pagination */}
               <div className="flex items-center justify-center gap-2 pt-8">
