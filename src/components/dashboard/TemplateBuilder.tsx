@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SectionConfig {
   id: string;
@@ -50,6 +53,14 @@ interface NavItem {
 const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  
+  // Project state
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+  const [currentProjectName, setCurrentProjectName] = useState("Untitled Project");
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [loadDialogOpen, setLoadDialogOpen] = useState(false);
+  const [projectName, setProjectName] = useState("");
+  const [savedProjects, setSavedProjects] = useState<any[]>([]);
   
   const [sitePagesOpen, setSitePagesOpen] = useState(false);
   const [typographyOpen, setTypographyOpen] = useState(false);
@@ -322,10 +333,285 @@ const TemplateBuilder = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Load saved projects on mount
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('updated_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error loading projects:', error);
+      return;
+    }
+    
+    setSavedProjects(data || []);
+  };
+
+  const handleNewProject = () => {
+    setCurrentProjectId(null);
+    setCurrentProjectName("Untitled Project");
+    // Reset all fields to defaults
+    setSections(sections.map(s => ({ ...s, enabled: false })));
+    setHeadingFont("Inter");
+    setBodyFont("Inter");
+    setSeoTitle("");
+    setSeoDescription("");
+    setSeoImage("");
+    setPosthogKey("");
+    setGoogleAnalyticsId("");
+    setSearchConsoleCode("");
+    setAdNetworkScript("");
+    setNavItems([
+      { id: "nav-1", label: "Home", path: "/" },
+      { id: "nav-2", label: "Reviews", path: "/reviews" },
+      { id: "nav-3", label: "Contact", path: "/contact" },
+    ]);
+    setCtaButtons([{
+      id: "cta-1",
+      text: "Shop Now",
+      affiliateUrl: "",
+      affiliateId: "",
+      trackingParams: "",
+    }]);
+    
+    toast({
+      title: "New project created",
+      description: "Start building your template",
+    });
+  };
+
+  const handleSaveProject = async () => {
+    if (!projectName.trim()) {
+      toast({
+        title: "Name required",
+        description: "Please enter a project name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const config = JSON.parse(generateTemplateConfig());
+    
+    if (currentProjectId) {
+      // Update existing
+      const { error } = await supabase
+        .from('projects')
+        .update({ 
+          name: projectName,
+          config: config,
+        })
+        .eq('id', currentProjectId);
+      
+      if (error) {
+        toast({
+          title: "Error saving project",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Create new
+      const { data, error } = await supabase
+        .from('projects')
+        .insert({ 
+          name: projectName,
+          config: config,
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        toast({
+          title: "Error saving project",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setCurrentProjectId(data.id);
+    }
+    
+    setCurrentProjectName(projectName);
+    setSaveDialogOpen(false);
+    loadProjects();
+    
+    toast({
+      title: "Project saved!",
+      description: `${projectName} has been saved`,
+    });
+  };
+
+  const handleLoadProject = async (projectId: string) => {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', projectId)
+      .single();
+    
+    if (error || !data) {
+      toast({
+        title: "Error loading project",
+        description: error?.message || "Project not found",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setCurrentProjectId(data.id);
+    setCurrentProjectName(data.name);
+    
+    // Load config (cast to any to handle JSONB)
+    const config = data.config as any;
+    if (config?.typography) {
+      setHeadingFont(config.typography.headingFont || "Inter");
+      setBodyFont(config.typography.bodyFont || "Inter");
+    }
+    if (config?.seo) {
+      setSeoTitle(config.seo.defaultTitle || "");
+      setSeoDescription(config.seo.defaultDescription || "");
+      setSeoImage(config.seo.ogImage || "");
+      setPosthogKey(config.seo.posthogKey || "");
+      setGoogleAnalyticsId(config.seo.googleAnalyticsId || "");
+      setSearchConsoleCode(config.seo.searchConsoleVerification || "");
+    }
+    if (config?.advertising) {
+      setAdNetworkScript(config.advertising.adNetworkScript || "");
+      setAdPlacements(config.advertising.placements || adPlacements);
+    }
+    if (config?.navbar) {
+      setNavbarEnabled(config.navbar.enabled);
+      setNavItems(config.navbar.items || navItems);
+    }
+    if (config?.ctaButtons) {
+      setCtaButtons(config.ctaButtons);
+    }
+    if (config?.sections) {
+      const loadedSections = sections.map(section => {
+        const configSection = config.sections.find((s: any) => s.type === section.id);
+        if (configSection) {
+          return { ...section, enabled: true, fields: configSection.config };
+        }
+        return section;
+      });
+      setSections(loadedSections);
+    }
+    
+    setLoadDialogOpen(false);
+    toast({
+      title: "Project loaded!",
+      description: `Loaded ${data.name}`,
+    });
+  };
+
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-4">
-        <Card>
+    <>
+      {/* Save Dialog */}
+      <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Save Project</DialogTitle>
+            <DialogDescription>
+              Enter a name for your project
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Project Name"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveProject}>
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Load Dialog */}
+      <Dialog open={loadDialogOpen} onOpenChange={setLoadDialogOpen}>
+        <DialogContent className="bg-card max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Load Project</DialogTitle>
+            <DialogDescription>
+              Select a project to load
+            </DialogDescription>
+          </DialogHeader>
+          <div className="max-h-96 overflow-y-auto space-y-2">
+            {savedProjects.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">No saved projects</p>
+            ) : (
+              savedProjects.map((project) => (
+                <Card key={project.id} className="cursor-pointer hover:bg-accent" onClick={() => handleLoadProject(project.id)}>
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-base">{project.name}</CardTitle>
+                        <CardDescription>
+                          {new Date(project.updated_at).toLocaleDateString()} • {project.status}
+                        </CardDescription>
+                      </div>
+                      <FolderOpen className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  </CardHeader>
+                </Card>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4">
+          {/* File Menu Bar */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Menu className="h-4 w-4 mr-2" />
+                        File
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-card z-50">
+                      <DropdownMenuItem onClick={handleNewProject}>
+                        <FilePlus className="h-4 w-4 mr-2" />
+                        New Project
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => {
+                        setProjectName(currentProjectName);
+                        setSaveDialogOpen(true);
+                      }}>
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Project
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLoadDialogOpen(true)}>
+                        <FolderOpen className="h-4 w-4 mr-2" />
+                        Load Project
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <span className="text-sm text-muted-foreground">
+                    Currently editing: <span className="font-medium text-foreground">{currentProjectName}</span>
+                  </span>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+          
+          <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -1040,6 +1326,7 @@ const TemplateBuilder = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 
