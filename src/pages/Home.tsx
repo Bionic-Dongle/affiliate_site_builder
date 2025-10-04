@@ -26,6 +26,8 @@ const Home = () => {
         return <Newsletter key={section.type} {...section.config} />;
       case "categories-bar":
         return <CategoriesBar key={section.type} {...section.config} />;
+      case "footer":
+        return <Footer key={section.type} {...section.config} />;
       default:
         return null;
     }
@@ -65,8 +67,6 @@ const Home = () => {
             />
           </div>
         ))}
-      
-      <Footer />
     </div>
   );
 };
