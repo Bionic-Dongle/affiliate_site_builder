@@ -93,6 +93,15 @@ const ContentGenerator = () => {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="blog-image">Main Image URL</Label>
+                <Input
+                  id="blog-image"
+                  placeholder="https://example.com/blog-hero-image.jpg"
+                  value={blogImage}
+                  onChange={(e) => setBlogImage(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="blog-content">Content</Label>
                 <Textarea
                   id="blog-content"
@@ -102,25 +111,14 @@ const ContentGenerator = () => {
                   onChange={(e) => setBlogContent(e.target.value)}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="blog-author">Author</Label>
-                  <Input
-                    id="blog-author"
-                    placeholder="John Doe"
-                    value={blogAuthor}
-                    onChange={(e) => setBlogAuthor(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="blog-image">Image URL</Label>
-                  <Input
-                    id="blog-image"
-                    placeholder="https://..."
-                    value={blogImage}
-                    onChange={(e) => setBlogImage(e.target.value)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="blog-author">Author</Label>
+                <Input
+                  id="blog-author"
+                  placeholder="John Doe"
+                  value={blogAuthor}
+                  onChange={(e) => setBlogAuthor(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="blog-meta">Meta Description (SEO)</Label>
