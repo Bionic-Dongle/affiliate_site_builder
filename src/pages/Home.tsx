@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Hero from "@/components/site/Hero";
 import BlogGrid from "@/components/site/BlogGrid";
 import CategoryGrid from "@/components/site/CategoryGrid";
@@ -7,47 +6,11 @@ import Newsletter from "@/components/site/Newsletter";
 import Footer from "@/components/site/Footer";
 import Navbar from "@/components/site/Navbar";
 import CategoriesBar from "@/components/site/CategoriesBar";
-import { CTARenderer, CTAPlacement, CTADefinition } from "@/components/site/CTAButton";
-
-// This would come from template config in real implementation
-const mockConfig = {
-  navbar: {
-    enabled: true,
-    siteName: "My Site",
-    logoType: "text" as const,
-    logoImage: "",
-    navItems: [
-      { label: "Home", path: "/" },
-      { label: "Reviews", path: "/reviews" },
-      { label: "Contact", path: "/contact" },
-    ],
-    showSearch: true,
-  },
-  sections: [
-    { type: "hero", config: { heading: "Welcome to Our Site", subheading: "Find the best products and reviews", buttonText: "Explore", buttonLink: "#", showCTA: true } },
-    { type: "categories-bar", config: { heading: "Browse Categories" } },
-    { type: "blog-grid", config: { heading: "Latest Articles", description: "Fresh insights and expert reviews" } },
-    { type: "categories", config: { heading: "Shop by Category", description: "Find what you need", images: ["", "", "", "", "", ""] } },
-    { type: "newsletter", config: { heading: "Stay Updated", description: "Get the latest reviews and deals", buttonText: "Subscribe" } },
-  ],
-  ctaLibrary: [] as CTADefinition[],
-  homeCtaPlacements: [] as CTAPlacement[],
-};
-
-interface HomeConfig {
-  navbar: typeof mockConfig.navbar;
-  sections: typeof mockConfig.sections;
-  ctaLibrary: CTADefinition[];
-  homeCtaPlacements: CTAPlacement[];
-}
+import { CTARenderer } from "@/components/site/CTAButton";
+import { useTemplate } from "@/contexts/TemplateContext";
 
 const Home = () => {
-  const [config, setConfig] = useState<HomeConfig>(mockConfig);
-
-  // In real implementation, read from template builder config
-  useEffect(() => {
-    // TODO: Load from template config JSON
-  }, []);
+  const { config } = useTemplate();
 
   const renderSection = (section: any, index: number) => {
     switch (section.type) {
@@ -88,18 +51,20 @@ const Home = () => {
         className="container mx-auto px-4 py-8"
       />
       
-      {config.sections.map((section, index) => (
-        <div key={index}>
-          {renderSection(section, index)}
-          {/* CTAs after this section */}
-          <CTARenderer 
-            placements={config.homeCtaPlacements} 
-            ctaLibrary={config.ctaLibrary} 
-            position={index + 1}
-            className="container mx-auto px-4 py-8"
-          />
-        </div>
-      ))}
+      {config.sections
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((section, index) => (
+          <div key={section.type + index}>
+            {renderSection(section, index)}
+            {/* CTAs after this section */}
+            <CTARenderer 
+              placements={config.homeCtaPlacements} 
+              ctaLibrary={config.ctaLibrary} 
+              position={index + 1}
+              className="container mx-auto px-4 py-8"
+            />
+          </div>
+        ))}
       
       <Footer />
     </div>

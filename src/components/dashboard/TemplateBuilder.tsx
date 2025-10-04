@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { useTemplate } from "@/contexts/TemplateContext";
 
 interface SectionConfig {
   id: string;
@@ -44,7 +45,7 @@ interface CTAButton {
   text: string;
   affiliateUrl: string;
   affiliateId: string;
-  trackingParams?: string;
+  trackingParams: string;
 }
 
 interface CTAPlacement {
@@ -68,6 +69,7 @@ interface NavItem {
 
 const TemplateBuilder = () => {
   const { toast } = useToast();
+  const { updateConfig } = useTemplate();
   
   // Project state
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
@@ -579,6 +581,46 @@ const TemplateBuilder = () => {
     };
     return JSON.stringify(config, null, 2);
   };
+
+  // Sync to context whenever state changes
+  useEffect(() => {
+    const enabledSections = sections.filter((s) => s.enabled);
+    updateConfig({
+      navbar: navbarEnabled ? {
+        enabled: true,
+        siteName: navbarLogoText,
+        logoType: navbarLogoType,
+        logoImage: navbarLogoImage,
+        navItems: navItems,
+        showSearch: navbarShowSearch,
+      } : {
+        enabled: false,
+        siteName: "",
+        logoType: "text",
+        logoImage: "",
+        navItems: [],
+        showSearch: false,
+      },
+      sections: enabledSections.map((section) => ({
+        type: section.id,
+        config: section.fields,
+        order: section.order,
+      })),
+      ctaLibrary: ctaLibrary,
+      homeCtaPlacements: homeCtaPlacements,
+      blogCtaPlacements: blogCtaPlacements,
+      landingCtaPlacements: landingCtaPlacements,
+      typography: {
+        headingFont: headingFont,
+        bodyFont: bodyFont,
+      },
+      seo: {
+        defaultTitle: seoTitle,
+        defaultDescription: seoDescription,
+        ogImage: seoImage,
+      },
+    });
+  }, [sections, navbarEnabled, navItems, navbarShowSearch, navbarLogoType, navbarLogoText, navbarLogoImage, ctaLibrary, homeCtaPlacements, blogCtaPlacements, landingCtaPlacements, headingFont, bodyFont, seoTitle, seoDescription, seoImage, updateConfig]);
 
   // Load saved projects on mount
   useEffect(() => {
