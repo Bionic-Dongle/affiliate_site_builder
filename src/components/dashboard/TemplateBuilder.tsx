@@ -152,27 +152,19 @@ const TemplateBuilder = () => {
       id: "blog-grid",
       name: "Blog Posts Grid",
       enabled: false,
-      fields: {
-        heading: "Latest Articles",
-        description: "Fresh insights and expert reviews",
-      },
+      fields: {},
     },
     {
       id: "categories-bar",
       name: "Categories/Tags Bar",
       enabled: false,
-      fields: {
-        heading: "Browse Categories",
-      },
+      fields: {},
     },
     {
       id: "sidebar",
       name: "Sidebar",
       enabled: false,
-      fields: {
-        heading: "Popular Posts",
-        description: "Trending content and categories",
-      },
+      fields: {},
     },
     {
       id: "categories",
@@ -1100,7 +1092,7 @@ const TemplateBuilder = () => {
                   </Label>
                 </div>
 
-                {section.enabled && (
+                {section.enabled && Object.keys(section.fields).length > 0 && (
                   <div className="ml-7 space-y-3 pt-2">
                     {section.id === "hero" ? (
                       <>
