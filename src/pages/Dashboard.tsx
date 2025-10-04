@@ -39,7 +39,7 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="generator" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">{/* centered with mx-auto */}
             <TabsTrigger value="generator" className="gap-2">
               <FileJson className="h-4 w-4" />
               Content
