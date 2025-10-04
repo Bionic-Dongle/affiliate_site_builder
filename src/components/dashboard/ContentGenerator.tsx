@@ -18,6 +18,7 @@ const ContentGenerator = () => {
   const [blogContent, setBlogContent] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogImage, setBlogImage] = useState("");
+  const [blogImageAlt, setBlogImageAlt] = useState("");
   const [blogMetaDesc, setBlogMetaDesc] = useState("");
 
   // Product state
@@ -35,6 +36,7 @@ const ContentGenerator = () => {
       content: blogContent,
       author: blogAuthor,
       image: blogImage,
+      imageAlt: blogImageAlt,
       metaDescription: blogMetaDesc,
       publishedAt: new Date().toISOString(),
       slug: blogTitle.toLowerCase().replace(/\s+/g, '-')
@@ -99,6 +101,15 @@ const ContentGenerator = () => {
                   placeholder="https://example.com/blog-hero-image.jpg"
                   value={blogImage}
                   onChange={(e) => setBlogImage(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="blog-image-alt">Image Alt Text (SEO)</Label>
+                <Input
+                  id="blog-image-alt"
+                  placeholder="Descriptive text for image (improves SEO & accessibility)"
+                  value={blogImageAlt}
+                  onChange={(e) => setBlogImageAlt(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
