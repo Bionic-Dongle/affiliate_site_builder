@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -41,6 +42,9 @@ const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [siteComponentsOpen, setSiteComponentsOpen] = useState(true);
+  
+  const [headingFont, setHeadingFont] = useState("Inter");
+  const [bodyFont, setBodyFont] = useState("Inter");
   
   const [navbarEnabled, setNavbarEnabled] = useState(true);
   const [navItems, setNavItems] = useState<NavItem[]>([
@@ -225,6 +229,10 @@ const TemplateBuilder = () => {
     const config = {
       siteName: "My Affiliate Site",
       template: "peak-inspire",
+      typography: {
+        headingFont: headingFont,
+        bodyFont: bodyFont,
+      },
       navbar: navbarEnabled ? { enabled: true, items: navItems } : { enabled: false },
       ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
@@ -249,6 +257,65 @@ const TemplateBuilder = () => {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Type className="h-5 w-5" />
+              Typography & Fonts
+            </CardTitle>
+            <CardDescription>Select fonts for your affiliate site</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Heading Font</Label>
+              <Select value={headingFont} onValueChange={setHeadingFont}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-50">
+                  <SelectItem value="Inter">Inter (Modern, Clean)</SelectItem>
+                  <SelectItem value="Poppins">Poppins (Bold, Friendly)</SelectItem>
+                  <SelectItem value="Montserrat">Montserrat (Professional)</SelectItem>
+                  <SelectItem value="Playfair Display">Playfair Display (Elegant, Serif)</SelectItem>
+                  <SelectItem value="Roboto">Roboto (Classic Sans)</SelectItem>
+                  <SelectItem value="Lato">Lato (Warm, Approachable)</SelectItem>
+                  <SelectItem value="Open Sans">Open Sans (Neutral)</SelectItem>
+                  <SelectItem value="Raleway">Raleway (Sophisticated)</SelectItem>
+                  <SelectItem value="Merriweather">Merriweather (Traditional Serif)</SelectItem>
+                  <SelectItem value="DM Sans">DM Sans (Geometric)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Body Font</Label>
+              <Select value={bodyFont} onValueChange={setBodyFont}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-card z-50">
+                  <SelectItem value="Inter">Inter (Modern, Clean)</SelectItem>
+                  <SelectItem value="Poppins">Poppins (Bold, Friendly)</SelectItem>
+                  <SelectItem value="Montserrat">Montserrat (Professional)</SelectItem>
+                  <SelectItem value="Playfair Display">Playfair Display (Elegant, Serif)</SelectItem>
+                  <SelectItem value="Roboto">Roboto (Classic Sans)</SelectItem>
+                  <SelectItem value="Lato">Lato (Warm, Approachable)</SelectItem>
+                  <SelectItem value="Open Sans">Open Sans (Neutral)</SelectItem>
+                  <SelectItem value="Raleway">Raleway (Sophisticated)</SelectItem>
+                  <SelectItem value="Merriweather">Merriweather (Traditional Serif)</SelectItem>
+                  <SelectItem value="DM Sans">DM Sans (Geometric)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="p-3 bg-muted rounded-lg text-xs text-muted-foreground">
+              <p className="font-medium mb-1">Font Preview:</p>
+              <p>Headings: <span className="font-semibold">{headingFont}</span></p>
+              <p>Body text: <span>{bodyFont}</span></p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
