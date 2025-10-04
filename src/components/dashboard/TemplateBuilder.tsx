@@ -92,6 +92,9 @@ const TemplateBuilder = () => {
   const [landingCtaPlacementsOpen, setLandingCtaPlacementsOpen] = useState(false);
   const [heroOpen, setHeroOpen] = useState(false);
   
+  // Section-specific open states
+  const [sectionOpenStates, setSectionOpenStates] = useState<Record<string, boolean>>({});
+  
   const [headingFont, setHeadingFont] = useState("Inter");
   const [bodyFont, setBodyFont] = useState("Inter");
   
@@ -1502,11 +1505,23 @@ const TemplateBuilder = () => {
                       >
                         <ArrowDown className="h-3 w-3" />
                       </Button>
+                      {Object.keys(section.fields).length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSectionOpenStates(prev => ({ ...prev, [section.id]: !prev[section.id] }))}
+                          className="h-7 w-7 p-0"
+                        >
+                          <ChevronDown 
+                            className={`h-4 w-4 transition-transform duration-200 ${sectionOpenStates[section.id] ? 'rotate-180' : ''}`}
+                          />
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>
 
-                {section.enabled && Object.keys(section.fields).length > 0 && (
+                {section.enabled && sectionOpenStates[section.id] && Object.keys(section.fields).length > 0 && (
                   <div className="ml-7 space-y-3 pt-2">
                     {section.id === "hero" ? (
                       <>
