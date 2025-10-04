@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -50,6 +51,7 @@ const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   
+  const [sitePagesOpen, setSitePagesOpen] = useState(false);
   const [typographyOpen, setTypographyOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
   const [advertisingOpen, setAdvertisingOpen] = useState(false);
@@ -66,6 +68,25 @@ const TemplateBuilder = () => {
   const [posthogKey, setPosthogKey] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [searchConsoleCode, setSearchConsoleCode] = useState("");
+  
+  const [landingPageMode, setLandingPageMode] = useState(false);
+  const [enabledPages, setEnabledPages] = useState({
+    home: true, // always enabled
+    blog: true,
+    about: false,
+    contact: false,
+    privacy: false,
+    terms: false,
+    affiliateDisclaimer: false,
+  });
+  const [pageSettings, setPageSettings] = useState({
+    blog: { slug: "/blog", title: "Blog", showInNav: true },
+    about: { slug: "/about", title: "About", showInNav: true },
+    contact: { slug: "/contact", title: "Contact", showInNav: true },
+    privacy: { slug: "/privacy", title: "Privacy Policy", showInNav: false },
+    terms: { slug: "/terms", title: "Terms of Service", showInNav: false },
+    affiliateDisclaimer: { slug: "/affiliate-disclaimer", title: "Affiliate Disclaimer", showInNav: false },
+  });
   
   const [adNetworkScript, setAdNetworkScript] = useState("");
   const [adPlacements, setAdPlacements] = useState({
@@ -259,6 +280,11 @@ const TemplateBuilder = () => {
     const config = {
       siteName: "My Affiliate Site",
       template: "peak-inspire",
+      pages: {
+        landingPageMode: landingPageMode,
+        enabled: enabledPages,
+        settings: pageSettings,
+      },
       typography: {
         headingFont: headingFont,
         bodyFont: bodyFont,
@@ -299,6 +325,117 @@ const TemplateBuilder = () => {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Site Pages
+                </CardTitle>
+                <CardDescription>Define which pages your site will have</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSitePagesOpen(!sitePagesOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${sitePagesOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
+          </CardHeader>
+          {sitePagesOpen && (
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-3 border rounded-lg bg-accent">
+              <div className="space-y-0.5">
+                <Label className="text-sm font-medium">Landing Page Mode</Label>
+                <p className="text-xs text-muted-foreground">Minimal homepage without nav/footer</p>
+              </div>
+              <Switch
+                checked={landingPageMode}
+                onCheckedChange={setLandingPageMode}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Pages</Label>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 p-2 rounded bg-muted/50">
+                  <Checkbox checked disabled />
+                  <Label className="flex-1 opacity-50">Home (Required)</Label>
+                </div>
+
+                {Object.entries(enabledPages).filter(([key]) => key !== 'home').map(([key, enabled]) => (
+                  <div key={key} className="space-y-2">
+                    <div className="flex items-center gap-3 p-2 rounded hover:bg-muted/50">
+                      <Checkbox
+                        checked={enabled}
+                        onCheckedChange={(checked) =>
+                          setEnabledPages(prev => ({ ...prev, [key]: !!checked }))
+                        }
+                      />
+                      <Label className="flex-1 capitalize cursor-pointer">
+                        {pageSettings[key as keyof typeof pageSettings]?.title || key}
+                      </Label>
+                    </div>
+                    
+                    {enabled && key !== 'home' && (
+                      <div className="ml-7 grid grid-cols-3 gap-2 p-3 border rounded-lg bg-card">
+                        <div className="space-y-1">
+                          <Label className="text-xs">Slug</Label>
+                          <Input
+                            value={pageSettings[key as keyof typeof pageSettings]?.slug || ""}
+                            onChange={(e) =>
+                              setPageSettings(prev => ({
+                                ...prev,
+                                [key]: { ...prev[key as keyof typeof prev], slug: e.target.value }
+                              }))
+                            }
+                            placeholder="/page"
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs">Title</Label>
+                          <Input
+                            value={pageSettings[key as keyof typeof pageSettings]?.title || ""}
+                            onChange={(e) =>
+                              setPageSettings(prev => ({
+                                ...prev,
+                                [key]: { ...prev[key as keyof typeof prev], title: e.target.value }
+                              }))
+                            }
+                            placeholder="Page Title"
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1 flex flex-col justify-end">
+                          <div className="flex items-center gap-2 h-8">
+                            <Checkbox
+                              checked={pageSettings[key as keyof typeof pageSettings]?.showInNav}
+                              onCheckedChange={(checked) =>
+                                setPageSettings(prev => ({
+                                  ...prev,
+                                  [key]: { ...prev[key as keyof typeof prev], showInNav: !!checked }
+                                }))
+                              }
+                            />
+                            <Label className="text-xs cursor-pointer">Show in Nav</Label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+          )}
+        </Card>
+
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
