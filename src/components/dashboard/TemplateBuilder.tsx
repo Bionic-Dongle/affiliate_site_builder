@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus, Code } from "lucide-react";
+import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus, Code, ArrowUp, ArrowDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -18,6 +18,7 @@ interface SectionConfig {
   id: string;
   name: string;
   enabled: boolean;
+  order: number;
   fields: {
     heading?: string;
     subheading?: string;
@@ -139,6 +140,7 @@ const TemplateBuilder = () => {
       id: "hero",
       name: "Hero Section",
       enabled: false,
+      order: 1,
       fields: {
         heading: "Welcome to Our Site",
         subheading: "Find the best products and reviews",
@@ -149,27 +151,44 @@ const TemplateBuilder = () => {
       },
     },
     {
-      id: "blog-grid",
-      name: "Blog Posts Grid",
+      id: "trust-badges",
+      name: "Trust Badges/Social Proof",
       enabled: false,
-      fields: {},
+      order: 2,
+      fields: {
+        heading: "Trusted by Thousands",
+        images: ["", "", "", ""],
+      },
+    },
+    {
+      id: "featured-products",
+      name: "Featured Products/Deals",
+      enabled: false,
+      order: 3,
+      fields: {
+        heading: "Top Picks This Week",
+        description: "Our hand-picked selection of the best deals",
+      },
     },
     {
       id: "categories-bar",
       name: "Categories/Tags Bar",
       enabled: false,
+      order: 4,
       fields: {},
     },
     {
-      id: "sidebar",
-      name: "Sidebar",
+      id: "blog-grid",
+      name: "Blog Posts Grid",
       enabled: false,
+      order: 5,
       fields: {},
     },
     {
       id: "categories",
       name: "Category Grid",
       enabled: false,
+      order: 6,
       fields: {
         heading: "Find Your Peak",
         description: "Explore our carefully curated categories",
@@ -180,6 +199,7 @@ const TemplateBuilder = () => {
       id: "reviews",
       name: "Product Reviews Section",
       enabled: false,
+      order: 7,
       fields: {
         heading: "Latest Peak Reviews",
         description: "Fresh insights on the newest products",
@@ -187,38 +207,20 @@ const TemplateBuilder = () => {
       },
     },
     {
-      id: "newsletter",
-      name: "Newsletter Signup",
+      id: "comparison-table",
+      name: "Product Comparison Table",
       enabled: false,
+      order: 8,
       fields: {
-        heading: "Peak Picks Weekly",
-        description: "Get our best product recommendations and exclusive deals",
-        buttonText: "Get Peak Picks",
-        backgroundImage: "",
-      },
-    },
-    {
-      id: "featured-products",
-      name: "Featured Products/Deals",
-      enabled: false,
-      fields: {
-        heading: "Top Picks This Week",
-        description: "Our hand-picked selection of the best deals",
-      },
-    },
-    {
-      id: "trust-badges",
-      name: "Trust Badges/Social Proof",
-      enabled: false,
-      fields: {
-        heading: "Trusted by Thousands",
-        images: ["", "", "", ""],
+        heading: "Compare Top Products",
+        description: "See how the best options stack up",
       },
     },
     {
       id: "testimonials",
       name: "Testimonials",
       enabled: false,
+      order: 9,
       fields: {
         heading: "What Our Readers Say",
       },
@@ -227,24 +229,36 @@ const TemplateBuilder = () => {
       id: "faq",
       name: "FAQ Section",
       enabled: false,
+      order: 10,
       fields: {
         heading: "Frequently Asked Questions",
         description: "Everything you need to know",
       },
     },
     {
-      id: "comparison-table",
-      name: "Product Comparison Table",
+      id: "newsletter",
+      name: "Newsletter Signup",
       enabled: false,
+      order: 11,
       fields: {
-        heading: "Compare Top Products",
-        description: "See how the best options stack up",
+        heading: "Peak Picks Weekly",
+        description: "Get our best product recommendations and exclusive deals",
+        buttonText: "Get Peak Picks",
+        backgroundImage: "",
       },
+    },
+    {
+      id: "sidebar",
+      name: "Sidebar",
+      enabled: false,
+      order: 12,
+      fields: {},
     },
     {
       id: "footer",
       name: "Footer",
       enabled: false,
+      order: 13,
       fields: {},
     },
   ]);
@@ -278,6 +292,30 @@ const TemplateBuilder = () => {
         return section;
       })
     );
+  };
+
+  const moveSectionUp = (sectionId: string) => {
+    setSections((prev) => {
+      const sorted = [...prev].sort((a, b) => a.order - b.order);
+      const index = sorted.findIndex(s => s.id === sectionId);
+      if (index <= 0) return prev;
+      
+      const newSections = [...sorted];
+      [newSections[index - 1].order, newSections[index].order] = [newSections[index].order, newSections[index - 1].order];
+      return newSections;
+    });
+  };
+
+  const moveSectionDown = (sectionId: string) => {
+    setSections((prev) => {
+      const sorted = [...prev].sort((a, b) => a.order - b.order);
+      const index = sorted.findIndex(s => s.id === sectionId);
+      if (index >= sorted.length - 1) return prev;
+      
+      const newSections = [...sorted];
+      [newSections[index].order, newSections[index + 1].order] = [newSections[index + 1].order, newSections[index].order];
+      return newSections;
+    });
   };
 
   const addNavItem = () => {
@@ -1120,7 +1158,7 @@ const TemplateBuilder = () => {
           </CardHeader>
           {siteComponentsOpen && (
           <CardContent className="space-y-6">
-            {sections.map((section) => (
+            {[...sections].sort((a, b) => a.order - b.order).map((section, index, sortedSections) => (
               <div key={section.id} className="space-y-3 pb-4 border-b last:border-0">
                 <div className="flex items-center gap-3">
                   <Checkbox
@@ -1134,6 +1172,28 @@ const TemplateBuilder = () => {
                   >
                     {section.name}
                   </Label>
+                  {section.enabled && (
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSectionUp(section.id)}
+                        disabled={index === 0}
+                        className="h-7 w-7 p-0"
+                      >
+                        <ArrowUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSectionDown(section.id)}
+                        disabled={index === sortedSections.length - 1}
+                        className="h-7 w-7 p-0"
+                      >
+                        <ArrowDown className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {section.enabled && Object.keys(section.fields).length > 0 && (
