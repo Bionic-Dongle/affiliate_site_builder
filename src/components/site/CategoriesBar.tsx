@@ -26,7 +26,7 @@ const CategoriesBar = ({ heading }: CategoriesBarProps) => {
             return (
               <Card
                 key={cat.name}
-                className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="group cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1 shadow-none"
               >
                 <button className="w-full p-6 flex flex-col items-center gap-3">
                   <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
