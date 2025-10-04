@@ -362,6 +362,28 @@ const TemplateBuilder = () => {
     );
   };
 
+  const moveCTAButtonUp = (id: string) => {
+    setCtaButtons((prev) => {
+      const index = prev.findIndex(btn => btn.id === id);
+      if (index <= 0) return prev;
+      
+      const newButtons = [...prev];
+      [newButtons[index - 1], newButtons[index]] = [newButtons[index], newButtons[index - 1]];
+      return newButtons;
+    });
+  };
+
+  const moveCTAButtonDown = (id: string) => {
+    setCtaButtons((prev) => {
+      const index = prev.findIndex(btn => btn.id === id);
+      if (index >= prev.length - 1) return prev;
+      
+      const newButtons = [...prev];
+      [newButtons[index], newButtons[index + 1]] = [newButtons[index + 1], newButtons[index]];
+      return newButtons;
+    });
+  };
+
   const generateTemplateConfig = () => {
     const enabledSections = sections.filter((s) => s.enabled);
     const config = {
@@ -1622,15 +1644,35 @@ const TemplateBuilder = () => {
               <div key={button.id} className="space-y-3 p-4 border rounded-lg bg-card">
                 <div className="flex items-center justify-between">
                   <Label className="text-sm font-medium">CTA Button {index + 1}</Label>
-                  {ctaButtons.length > 1 && (
+                  <div className="flex gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => removeCTAButton(button.id)}
+                      onClick={() => moveCTAButtonUp(button.id)}
+                      disabled={index === 0}
+                      className="h-7 w-7 p-0"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <ArrowUp className="h-3 w-3" />
                     </Button>
-                  )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => moveCTAButtonDown(button.id)}
+                      disabled={index === ctaButtons.length - 1}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ArrowDown className="h-3 w-3" />
+                    </Button>
+                    {ctaButtons.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeCTAButton(button.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="space-y-1.5">
