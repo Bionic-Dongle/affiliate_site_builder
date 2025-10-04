@@ -98,8 +98,8 @@ const TemplateBuilder = () => {
   });
   const [pageSettings, setPageSettings] = useState({
     blog: { slug: "/blog", title: "Blog", showInNav: true },
-    about: { slug: "/about", title: "About", showInNav: true },
-    contact: { slug: "/contact", title: "Contact", showInNav: true },
+    about: { slug: "/about", title: "About", showInNav: true, content: "" },
+    contact: { slug: "/contact", title: "Contact", showInNav: true, content: "", email: "", phone: "", address: "" },
     privacy: { slug: "/privacy", title: "Privacy Policy", showInNav: false },
     terms: { slug: "/terms", title: "Terms of Service", showInNav: false },
     affiliateDisclaimer: { slug: "/affiliate-disclaimer", title: "Affiliate Disclaimer", showInNav: false },
@@ -765,49 +765,140 @@ const TemplateBuilder = () => {
                     </div>
                     
                     {enabled && key !== 'home' && (
-                      <div className="ml-7 grid grid-cols-3 gap-2 p-3 border rounded-lg bg-card">
-                        <div className="space-y-1">
-                          <Label className="text-xs">Slug</Label>
-                          <Input
-                            value={pageSettings[key as keyof typeof pageSettings]?.slug || ""}
-                            onChange={(e) =>
-                              setPageSettings(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key as keyof typeof prev], slug: e.target.value }
-                              }))
-                            }
-                            placeholder="/page"
-                            className="h-8 text-xs"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-xs">Title</Label>
-                          <Input
-                            value={pageSettings[key as keyof typeof pageSettings]?.title || ""}
-                            onChange={(e) =>
-                              setPageSettings(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key as keyof typeof prev], title: e.target.value }
-                              }))
-                            }
-                            placeholder="Page Title"
-                            className="h-8 text-xs"
-                          />
-                        </div>
-                        <div className="space-y-1 flex flex-col justify-end">
-                          <div className="flex items-center gap-2 h-8">
-                            <Checkbox
-                              checked={pageSettings[key as keyof typeof pageSettings]?.showInNav}
-                              onCheckedChange={(checked) =>
+                      <div className="ml-7 space-y-3 p-3 border rounded-lg bg-card">
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Slug</Label>
+                            <Input
+                              value={pageSettings[key as keyof typeof pageSettings]?.slug || ""}
+                              onChange={(e) =>
                                 setPageSettings(prev => ({
                                   ...prev,
-                                  [key]: { ...prev[key as keyof typeof prev], showInNav: !!checked }
+                                  [key]: { ...prev[key as keyof typeof prev], slug: e.target.value }
                                 }))
                               }
+                              placeholder="/page"
+                              className="h-8 text-xs"
                             />
-                            <Label className="text-xs cursor-pointer">Show in Nav</Label>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Title</Label>
+                            <Input
+                              value={pageSettings[key as keyof typeof pageSettings]?.title || ""}
+                              onChange={(e) =>
+                                setPageSettings(prev => ({
+                                  ...prev,
+                                  [key]: { ...prev[key as keyof typeof prev], title: e.target.value }
+                                }))
+                              }
+                              placeholder="Page Title"
+                              className="h-8 text-xs"
+                            />
+                          </div>
+                          <div className="space-y-1 flex flex-col justify-end">
+                            <div className="flex items-center gap-2 h-8">
+                              <Checkbox
+                                checked={pageSettings[key as keyof typeof pageSettings]?.showInNav}
+                                onCheckedChange={(checked) =>
+                                  setPageSettings(prev => ({
+                                    ...prev,
+                                    [key]: { ...prev[key as keyof typeof prev], showInNav: !!checked }
+                                  }))
+                                }
+                              />
+                              <Label className="text-xs cursor-pointer">Show in Nav</Label>
+                            </div>
                           </div>
                         </div>
+
+                        {/* About Page Content */}
+                        {key === 'about' && (
+                          <div className="space-y-2 pt-3 border-t">
+                            <Label className="text-sm">About Content</Label>
+                            <Textarea
+                              value={pageSettings.about.content || ""}
+                              onChange={(e) =>
+                                setPageSettings(prev => ({
+                                  ...prev,
+                                  about: { ...prev.about, content: e.target.value }
+                                }))
+                              }
+                              placeholder="Write your About page content here..."
+                              rows={6}
+                              className="text-sm"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Describe your site, mission, and team
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Contact Page Content */}
+                        {key === 'contact' && (
+                          <div className="space-y-3 pt-3 border-t">
+                            <Label className="text-sm">Contact Information</Label>
+                            <div className="space-y-2">
+                              <div className="space-y-1">
+                                <Label className="text-xs">Email</Label>
+                                <Input
+                                  value={pageSettings.contact.email || ""}
+                                  onChange={(e) =>
+                                    setPageSettings(prev => ({
+                                      ...prev,
+                                      contact: { ...prev.contact, email: e.target.value }
+                                    }))
+                                  }
+                                  placeholder="contact@yoursite.com"
+                                  className="h-8 text-xs"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Phone (Optional)</Label>
+                                <Input
+                                  value={pageSettings.contact.phone || ""}
+                                  onChange={(e) =>
+                                    setPageSettings(prev => ({
+                                      ...prev,
+                                      contact: { ...prev.contact, phone: e.target.value }
+                                    }))
+                                  }
+                                  placeholder="+1 (555) 123-4567"
+                                  className="h-8 text-xs"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Address (Optional)</Label>
+                                <Textarea
+                                  value={pageSettings.contact.address || ""}
+                                  onChange={(e) =>
+                                    setPageSettings(prev => ({
+                                      ...prev,
+                                      contact: { ...prev.contact, address: e.target.value }
+                                    }))
+                                  }
+                                  placeholder="123 Main St, City, State 12345"
+                                  rows={2}
+                                  className="text-xs"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Additional Content</Label>
+                                <Textarea
+                                  value={pageSettings.contact.content || ""}
+                                  onChange={(e) =>
+                                    setPageSettings(prev => ({
+                                      ...prev,
+                                      contact: { ...prev.contact, content: e.target.value }
+                                    }))
+                                  }
+                                  placeholder="Contact form instructions, business hours, etc."
+                                  rows={3}
+                                  className="text-xs"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
