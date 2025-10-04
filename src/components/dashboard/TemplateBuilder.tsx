@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus } from "lucide-react";
+import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -52,7 +52,6 @@ interface NavItem {
 
 const TemplateBuilder = () => {
   const { toast } = useToast();
-  const [copied, setCopied] = useState(false);
   
   // Project state
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
@@ -323,16 +322,6 @@ const TemplateBuilder = () => {
     return JSON.stringify(config, null, 2);
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generateTemplateConfig());
-    setCopied(true);
-    toast({
-      title: "Template config copied!",
-      description: "Save this configuration to build your site",
-    });
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   // Load saved projects on mount
   useEffect(() => {
     loadProjects();
@@ -511,7 +500,7 @@ const TemplateBuilder = () => {
   };
 
   return (
-    <>
+    <div className="max-w-4xl mx-auto">
       {/* Save Dialog */}
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent className="bg-card">
@@ -571,8 +560,7 @@ const TemplateBuilder = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="space-y-4">
+      <div className="space-y-4">
           {/* File Menu Bar */}
           <Card>
             <CardHeader className="pb-3">
@@ -1284,49 +1272,7 @@ const TemplateBuilder = () => {
           )}
         </Card>
       </div>
-
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Template Configuration</CardTitle>
-            <CardDescription>Preview of your site template config</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <pre className="bg-muted p-4 rounded-lg text-xs overflow-auto max-h-[500px]">
-              <code>{generateTemplateConfig()}</code>
-            </pre>
-
-            <Button onClick={handleCopy} className="w-full mt-4" size="lg">
-              {copied ? (
-                <>
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="mr-2 h-4 w-4" />
-                  Copy Template Config
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-accent">
-          <CardContent className="pt-6">
-            <h4 className="font-medium mb-2">How to Use</h4>
-            <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Configure your site components and enable what you need</li>
-              <li>Set up navigation menu items</li>
-              <li>Add affiliate CTAs with tracking parameters</li>
-              <li>Copy the generated template configuration</li>
-              <li>Use this config to build your affiliate site</li>
-            </ol>
-          </CardContent>
-        </Card>
-      </div>
     </div>
-    </>
   );
 };
 
