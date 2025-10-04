@@ -217,6 +217,135 @@ const TemplateBuilder = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+              <Layout className="h-5 w-5" />
+              Site Components
+            </CardTitle>
+            <CardDescription>Select and configure sections for your site</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {sections.map((section) => (
+              <div key={section.id} className="space-y-3 pb-4 border-b last:border-0">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id={section.id}
+                    checked={section.enabled}
+                    onCheckedChange={() => toggleSection(section.id)}
+                  />
+                  <Label
+                    htmlFor={section.id}
+                    className="text-base font-medium cursor-pointer"
+                  >
+                    {section.name}
+                  </Label>
+                </div>
+
+                {section.enabled && (
+                  <div className="ml-7 space-y-3 pt-2">
+                    {section.fields.heading !== undefined && (
+                      <div className="space-y-1.5">
+                        <Label className="text-sm">Heading</Label>
+                        <Input
+                          placeholder="Section heading"
+                          value={section.fields.heading}
+                          onChange={(e) =>
+                            updateField(section.id, "heading", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {section.fields.subheading !== undefined && (
+                      <div className="space-y-1.5">
+                        <Label className="text-sm">Subheading</Label>
+                        <Input
+                          placeholder="Subheading text"
+                          value={section.fields.subheading}
+                          onChange={(e) =>
+                            updateField(section.id, "subheading", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {section.fields.description !== undefined && (
+                      <div className="space-y-1.5">
+                        <Label className="text-sm">Description</Label>
+                        <Textarea
+                          placeholder="Section description"
+                          rows={2}
+                          value={section.fields.description}
+                          onChange={(e) =>
+                            updateField(section.id, "description", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {section.fields.buttonText !== undefined && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <Label className="text-sm">Button Text</Label>
+                          <Input
+                            placeholder="Click here"
+                            value={section.fields.buttonText}
+                            onChange={(e) =>
+                              updateField(section.id, "buttonText", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-sm">Button Link</Label>
+                          <Input
+                            placeholder="/page"
+                            value={section.fields.buttonLink}
+                            onChange={(e) =>
+                              updateField(section.id, "buttonLink", e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {section.fields.backgroundImage !== undefined && (
+                      <div className="space-y-1.5">
+                        <Label className="text-sm">Background Image URL</Label>
+                        <Input
+                          placeholder="https://..."
+                          value={section.fields.backgroundImage}
+                          onChange={(e) =>
+                            updateField(section.id, "backgroundImage", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {section.fields.images && (
+                      <div className="space-y-2">
+                        <Label className="text-sm">
+                          Image URLs ({section.fields.images.length} items)
+                        </Label>
+                        {section.fields.images.map((img, idx) => (
+                          <Input
+                            key={idx}
+                            placeholder={`Image ${idx + 1} URL`}
+                            value={img}
+                            onChange={(e) =>
+                              updateImageArray(section.id, idx, e.target.value)
+                            }
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
               <Menu className="h-5 w-5" />
               Navigation Bar
             </CardTitle>
@@ -350,135 +479,6 @@ const TemplateBuilder = () => {
             </Button>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Layout className="h-5 w-5" />
-              Site Components
-            </CardTitle>
-            <CardDescription>Select and configure sections for your site</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {sections.map((section) => (
-              <div key={section.id} className="space-y-3 pb-4 border-b last:border-0">
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    id={section.id}
-                    checked={section.enabled}
-                    onCheckedChange={() => toggleSection(section.id)}
-                  />
-                  <Label
-                    htmlFor={section.id}
-                    className="text-base font-medium cursor-pointer"
-                  >
-                    {section.name}
-                  </Label>
-                </div>
-
-                {section.enabled && (
-                  <div className="ml-7 space-y-3 pt-2">
-                    {section.fields.heading !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Heading</Label>
-                        <Input
-                          placeholder="Section heading"
-                          value={section.fields.heading}
-                          onChange={(e) =>
-                            updateField(section.id, "heading", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.subheading !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Subheading</Label>
-                        <Input
-                          placeholder="Subheading text"
-                          value={section.fields.subheading}
-                          onChange={(e) =>
-                            updateField(section.id, "subheading", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.description !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Description</Label>
-                        <Textarea
-                          placeholder="Section description"
-                          rows={2}
-                          value={section.fields.description}
-                          onChange={(e) =>
-                            updateField(section.id, "description", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.buttonText !== undefined && (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">Button Text</Label>
-                          <Input
-                            placeholder="Click here"
-                            value={section.fields.buttonText}
-                            onChange={(e) =>
-                              updateField(section.id, "buttonText", e.target.value)
-                            }
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">Button Link</Label>
-                          <Input
-                            placeholder="/page"
-                            value={section.fields.buttonLink}
-                            onChange={(e) =>
-                              updateField(section.id, "buttonLink", e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {section.fields.backgroundImage !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Background Image URL</Label>
-                        <Input
-                          placeholder="https://..."
-                          value={section.fields.backgroundImage}
-                          onChange={(e) =>
-                            updateField(section.id, "backgroundImage", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.images && (
-                      <div className="space-y-2">
-                        <Label className="text-sm">
-                          Image URLs ({section.fields.images.length} items)
-                        </Label>
-                        {section.fields.images.map((img, idx) => (
-                          <Input
-                            key={idx}
-                            placeholder={`Image ${idx + 1} URL`}
-                            value={img}
-                            onChange={(e) =>
-                              updateImageArray(section.id, idx, e.target.value)
-                            }
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
       </div>
 
       <div className="space-y-4">
@@ -512,10 +512,11 @@ const TemplateBuilder = () => {
           <CardContent className="pt-6">
             <h4 className="font-medium mb-2">How to Use</h4>
             <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Check the sections you want on your site</li>
-              <li>Fill in text content and image URLs for each section</li>
+              <li>Configure your site components and enable what you need</li>
+              <li>Set up navigation menu items</li>
+              <li>Add affiliate CTAs with tracking parameters</li>
               <li>Copy the generated template configuration</li>
-              <li>Use this config to build your affiliate site pages</li>
+              <li>Use this config to build your affiliate site</li>
             </ol>
           </CardContent>
         </Card>
