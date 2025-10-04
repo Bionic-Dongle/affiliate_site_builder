@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2 } from "lucide-react";
+import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SectionConfig {
@@ -31,9 +31,22 @@ interface CTAButton {
   trackingParams?: string;
 }
 
+interface NavItem {
+  id: string;
+  label: string;
+  path: string;
+}
+
 const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  
+  const [navbarEnabled, setNavbarEnabled] = useState(true);
+  const [navItems, setNavItems] = useState<NavItem[]>([
+    { id: "nav-1", label: "Home", path: "/" },
+    { id: "nav-2", label: "Reviews", path: "/reviews" },
+    { id: "nav-3", label: "Contact", path: "/contact" },
+  ]);
   
   const [ctaButtons, setCtaButtons] = useState<CTAButton[]>([
     {
@@ -128,6 +141,27 @@ const TemplateBuilder = () => {
     );
   };
 
+  const addNavItem = () => {
+    setNavItems((prev) => [
+      ...prev,
+      {
+        id: `nav-${prev.length + 1}`,
+        label: "New Page",
+        path: "/page",
+      },
+    ]);
+  };
+
+  const removeNavItem = (id: string) => {
+    setNavItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const updateNavItem = (id: string, field: keyof NavItem, value: string) => {
+    setNavItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
   const addCTAButton = () => {
     setCtaButtons((prev) => [
       ...prev,
@@ -156,6 +190,7 @@ const TemplateBuilder = () => {
     const config = {
       siteName: "My Affiliate Site",
       template: "peak-inspire",
+      navbar: navbarEnabled ? { enabled: true, items: navItems } : { enabled: false },
       ctaButtons: ctaButtons,
       sections: enabledSections.map((section) => ({
         type: section.id,
@@ -179,6 +214,73 @@ const TemplateBuilder = () => {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Menu className="h-5 w-5" />
+              Navigation Bar
+            </CardTitle>
+            <CardDescription>Configure your site's navigation menu</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-3 pb-3 border-b">
+              <Checkbox
+                id="navbar-enabled"
+                checked={navbarEnabled}
+                onCheckedChange={(checked) => setNavbarEnabled(!!checked)}
+              />
+              <Label htmlFor="navbar-enabled" className="text-base font-medium cursor-pointer">
+                Enable Navigation Bar
+              </Label>
+            </div>
+
+            {navbarEnabled && (
+              <>
+                {navItems.map((item, index) => (
+                  <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-muted/50">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-medium">Nav Item {index + 1}</Label>
+                      {navItems.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeNavItem(item.id)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Label</Label>
+                        <Input
+                          placeholder="Home, About, etc."
+                          value={item.label}
+                          onChange={(e) => updateNavItem(item.id, "label", e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Path</Label>
+                        <Input
+                          placeholder="/home, /about"
+                          value={item.path}
+                          onChange={(e) => updateNavItem(item.id, "path", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                <Button onClick={addNavItem} variant="outline" size="sm" className="w-full">
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add Navigation Item
+                </Button>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
