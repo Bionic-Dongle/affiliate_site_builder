@@ -70,7 +70,7 @@ const ContentGenerator = () => {
   };
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="max-w-2xl mx-auto">
       <Card>
         <CardHeader>
           <CardTitle>Content Input</CardTitle>
@@ -227,29 +227,6 @@ const ContentGenerator = () => {
               </>
             )}
           </Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>JSON Output Preview</CardTitle>
-          <CardDescription>This is what you'll paste into your data files</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <pre className="bg-muted p-4 rounded-lg text-xs overflow-auto max-h-[600px]">
-            <code>
-              {contentType === "blog" ? generateBlogJSON() : generateProductJSON()}
-            </code>
-          </pre>
-          <div className="mt-4 p-3 bg-accent rounded-lg">
-            <p className="text-sm font-medium mb-1">Next Steps:</p>
-            <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
-              <li>Click "Generate & Copy JSON" above</li>
-              <li>Open <code className="bg-background px-1 rounded">/src/data/{contentType}s.json</code></li>
-              <li>Add the JSON to your array</li>
-              <li>Site rebuilds automatically</li>
-            </ol>
-          </div>
         </CardContent>
       </Card>
     </div>
