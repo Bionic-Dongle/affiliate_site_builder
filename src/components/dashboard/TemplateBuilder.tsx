@@ -29,6 +29,7 @@ interface SectionConfig {
     backgroundImage?: string;
     showCTA?: boolean;
     images?: string[];
+    categories?: Array<{ name: string; iconName: string }>;
     adScript?: string;
     adUnits?: {
       headerBanner?: string;
@@ -204,7 +205,18 @@ const TemplateBuilder = () => {
       name: "Categories/Tags Bar",
       enabled: false,
       order: 4,
-      fields: {},
+      fields: {
+        heading: "Browse Categories",
+        categories: [
+          { name: "All", iconName: "Grid3x3" },
+          { name: "Tech", iconName: "Laptop" },
+          { name: "Home", iconName: "Home" },
+          { name: "Fashion", iconName: "Shirt" },
+          { name: "Sports", iconName: "Dumbbell" },
+          { name: "Health", iconName: "Heart" },
+          { name: "Travel", iconName: "Plane" },
+        ],
+      },
     },
     {
       id: "blog-grid",
@@ -1669,6 +1681,71 @@ const TemplateBuilder = () => {
                                 updateField(section.id, "backgroundImage", e.target.value)
                               }
                             />
+                          </div>
+                        )}
+
+                        {section.fields.categories && (
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-sm">Categories ({section.fields.categories.length} items)</Label>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const newCategories = [...(section.fields.categories || []), { name: "New Category", iconName: "Tag" }];
+                                  updateField(section.id, "categories", newCategories);
+                                }}
+                              >
+                                <Plus className="h-3 w-3 mr-1" />
+                                Add
+                              </Button>
+                            </div>
+                            {section.fields.categories.map((cat, idx) => (
+                              <div key={idx} className="flex gap-2 items-start">
+                                <div className="flex-1 grid grid-cols-2 gap-2">
+                                  <div className="space-y-1">
+                                    <Label className="text-xs">Name</Label>
+                                    <Input
+                                      placeholder="Category name"
+                                      value={cat.name}
+                                      onChange={(e) => {
+                                        const newCategories = [...section.fields.categories!];
+                                        newCategories[idx] = { ...newCategories[idx], name: e.target.value };
+                                        updateField(section.id, "categories", newCategories);
+                                      }}
+                                      className="h-8 text-xs"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label className="text-xs">Icon (Lucide name)</Label>
+                                    <Input
+                                      placeholder="Laptop"
+                                      value={cat.iconName}
+                                      onChange={(e) => {
+                                        const newCategories = [...section.fields.categories!];
+                                        newCategories[idx] = { ...newCategories[idx], iconName: e.target.value };
+                                        updateField(section.id, "categories", newCategories);
+                                      }}
+                                      className="h-8 text-xs"
+                                    />
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newCategories = section.fields.categories!.filter((_, i) => i !== idx);
+                                    updateField(section.id, "categories", newCategories);
+                                  }}
+                                  className="h-8 w-8 p-0 mt-5"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ))}
+                            <p className="text-xs text-muted-foreground">
+                              Use Lucide icon names like: Laptop, Home, Shirt, Heart, Plane, etc.
+                            </p>
                           </div>
                         )}
 
