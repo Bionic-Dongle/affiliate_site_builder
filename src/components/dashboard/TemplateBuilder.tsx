@@ -25,6 +25,7 @@ interface SectionConfig {
     buttonText?: string;
     buttonLink?: string;
     backgroundImage?: string;
+    showCTA?: boolean;
     images?: string[];
     adScript?: string;
     adUnits?: {
@@ -69,6 +70,7 @@ const TemplateBuilder = () => {
   const [siteComponentsOpen, setSiteComponentsOpen] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [ctaOpen, setCtaOpen] = useState(false);
+  const [heroOpen, setHeroOpen] = useState(false);
   
   const [headingFont, setHeadingFont] = useState("Inter");
   const [bodyFont, setBodyFont] = useState("Inter");
@@ -134,11 +136,12 @@ const TemplateBuilder = () => {
       name: "Hero Section",
       enabled: false,
       fields: {
-        heading: "Elevate Your Choices",
-        subheading: "Honest product reviews and buying guides",
-        buttonText: "Explore Reviews",
-        buttonLink: "/reviews",
+        heading: "Welcome to Our Site",
+        subheading: "Find the best products and reviews",
+        buttonText: "Explore",
+        buttonLink: "#",
         backgroundImage: "",
+        showCTA: true,
       },
     },
     {
@@ -1084,100 +1087,173 @@ const TemplateBuilder = () => {
 
                 {section.enabled && (
                   <div className="ml-7 space-y-3 pt-2">
-                    {section.fields.heading !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Heading</Label>
-                        <Input
-                          placeholder="Section heading"
-                          value={section.fields.heading}
-                          onChange={(e) =>
-                            updateField(section.id, "heading", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.subheading !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Subheading</Label>
-                        <Input
-                          placeholder="Subheading text"
-                          value={section.fields.subheading}
-                          onChange={(e) =>
-                            updateField(section.id, "subheading", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.description !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Description</Label>
-                        <Textarea
-                          placeholder="Section description"
-                          rows={2}
-                          value={section.fields.description}
-                          onChange={(e) =>
-                            updateField(section.id, "description", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.buttonText !== undefined && (
-                      <div className="grid grid-cols-2 gap-3">
+                    {section.id === "hero" ? (
+                      <>
                         <div className="space-y-1.5">
-                          <Label className="text-sm">Button Text</Label>
+                          <Label className="text-sm">H1 Heading</Label>
                           <Input
-                            placeholder="Click here"
-                            value={section.fields.buttonText}
+                            placeholder="Welcome to Our Site"
+                            value={section.fields.heading}
                             onChange={(e) =>
-                              updateField(section.id, "buttonText", e.target.value)
+                              updateField(section.id, "heading", e.target.value)
                             }
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-sm">Button Link</Label>
+                          <Label className="text-sm">Tagline</Label>
                           <Input
-                            placeholder="/page"
-                            value={section.fields.buttonLink}
+                            placeholder="Find the best products and reviews"
+                            value={section.fields.subheading}
                             onChange={(e) =>
-                              updateField(section.id, "buttonLink", e.target.value)
+                              updateField(section.id, "subheading", e.target.value)
                             }
                           />
                         </div>
-                      </div>
-                    )}
-
-                    {section.fields.backgroundImage !== undefined && (
-                      <div className="space-y-1.5">
-                        <Label className="text-sm">Background Image URL</Label>
-                        <Input
-                          placeholder="https://..."
-                          value={section.fields.backgroundImage}
-                          onChange={(e) =>
-                            updateField(section.id, "backgroundImage", e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {section.fields.images && (
-                      <div className="space-y-2">
-                        <Label className="text-sm">
-                          Image URLs ({section.fields.images.length} items)
-                        </Label>
-                        {section.fields.images.map((img, idx) => (
-                          <Input
-                            key={idx}
-                            placeholder={`Image ${idx + 1} URL`}
-                            value={img}
-                            onChange={(e) =>
-                              updateImageArray(section.id, idx, e.target.value)
+                        <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
+                          <Checkbox
+                            id={`${section.id}-show-cta`}
+                            checked={section.fields.showCTA !== false}
+                            onCheckedChange={(checked) =>
+                              updateField(section.id, "showCTA", !!checked)
                             }
                           />
-                        ))}
-                      </div>
+                          <Label htmlFor={`${section.id}-show-cta`} className="text-sm font-medium cursor-pointer">
+                            Show Call-to-Action Button
+                          </Label>
+                        </div>
+                        {section.fields.showCTA !== false && (
+                          <div className="grid grid-cols-2 gap-3 pl-7">
+                            <div className="space-y-1.5">
+                              <Label className="text-sm">Button Text</Label>
+                              <Input
+                                placeholder="Explore"
+                                value={section.fields.buttonText}
+                                onChange={(e) =>
+                                  updateField(section.id, "buttonText", e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label className="text-sm">Button Link</Label>
+                              <Input
+                                placeholder="#"
+                                value={section.fields.buttonLink}
+                                onChange={(e) =>
+                                  updateField(section.id, "buttonLink", e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+                        <div className="space-y-1.5">
+                          <Label className="text-sm">Background Image URL (Optional)</Label>
+                          <Input
+                            placeholder="https://..."
+                            value={section.fields.backgroundImage}
+                            onChange={(e) =>
+                              updateField(section.id, "backgroundImage", e.target.value)
+                            }
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {section.fields.heading !== undefined && (
+                          <div className="space-y-1.5">
+                            <Label className="text-sm">Heading</Label>
+                            <Input
+                              placeholder="Section heading"
+                              value={section.fields.heading}
+                              onChange={(e) =>
+                                updateField(section.id, "heading", e.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {section.fields.subheading !== undefined && (
+                          <div className="space-y-1.5">
+                            <Label className="text-sm">Subheading</Label>
+                            <Input
+                              placeholder="Subheading text"
+                              value={section.fields.subheading}
+                              onChange={(e) =>
+                                updateField(section.id, "subheading", e.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {section.fields.description !== undefined && (
+                          <div className="space-y-1.5">
+                            <Label className="text-sm">Description</Label>
+                            <Textarea
+                              placeholder="Section description"
+                              rows={2}
+                              value={section.fields.description}
+                              onChange={(e) =>
+                                updateField(section.id, "description", e.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {section.fields.buttonText !== undefined && (
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1.5">
+                              <Label className="text-sm">Button Text</Label>
+                              <Input
+                                placeholder="Click here"
+                                value={section.fields.buttonText}
+                                onChange={(e) =>
+                                  updateField(section.id, "buttonText", e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="space-y-1.5">
+                              <Label className="text-sm">Button Link</Label>
+                              <Input
+                                placeholder="/page"
+                                value={section.fields.buttonLink}
+                                onChange={(e) =>
+                                  updateField(section.id, "buttonLink", e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {section.fields.backgroundImage !== undefined && (
+                          <div className="space-y-1.5">
+                            <Label className="text-sm">Background Image URL</Label>
+                            <Input
+                              placeholder="https://..."
+                              value={section.fields.backgroundImage}
+                              onChange={(e) =>
+                                updateField(section.id, "backgroundImage", e.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {section.fields.images && (
+                          <div className="space-y-2">
+                            <Label className="text-sm">
+                              Image URLs ({section.fields.images.length} items)
+                            </Label>
+                            {section.fields.images.map((img, idx) => (
+                              <Input
+                                key={idx}
+                                placeholder={`Image ${idx + 1} URL`}
+                                value={img}
+                                onChange={(e) =>
+                                  updateImageArray(section.id, idx, e.target.value)
+                                }
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 )}

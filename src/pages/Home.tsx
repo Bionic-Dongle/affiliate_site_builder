@@ -21,7 +21,7 @@ const mockConfig = {
     showSearch: true,
   },
   sections: [
-    { type: "hero", config: { heading: "Welcome to Our Site", subheading: "Find the best products and reviews", buttonText: "Explore", buttonLink: "/blog" } },
+    { type: "hero", config: { heading: "Welcome to Our Site", subheading: "Find the best products and reviews", buttonText: "Explore", buttonLink: "#", showCTA: true } },
     { type: "categories-bar", config: { heading: "Browse Categories" } },
     { type: "blog-grid", config: { heading: "Latest Articles", description: "Fresh insights and expert reviews" } },
     { type: "categories", config: { heading: "Shop by Category", description: "Find what you need", images: ["", "", "", "", "", ""] } },
