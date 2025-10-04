@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, CheckCircle, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -41,6 +40,7 @@ interface NavItem {
 const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [siteComponentsOpen, setSiteComponentsOpen] = useState(true);
   
   const [navbarEnabled, setNavbarEnabled] = useState(true);
   const [navItems, setNavItems] = useState<NavItem[]>([
@@ -251,36 +251,45 @@ const TemplateBuilder = () => {
       <div className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Layout className="h-5 w-5" />
-              Site Components
-            </CardTitle>
-            <CardDescription>Select and configure sections for your site</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Layout className="h-5 w-5" />
+                  Site Components
+                </CardTitle>
+                <CardDescription>Select and configure sections for your site</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSiteComponentsOpen(!siteComponentsOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${siteComponentsOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {siteComponentsOpen && (
           <CardContent className="space-y-6">
             {sections.map((section) => (
-              <Collapsible key={section.id} open={section.enabled} className="space-y-3 pb-4 border-b last:border-0">
+              <div key={section.id} className="space-y-3 pb-4 border-b last:border-0">
                 <div className="flex items-center gap-3">
                   <Checkbox
                     id={section.id}
                     checked={section.enabled}
                     onCheckedChange={() => toggleSection(section.id)}
                   />
-                  <CollapsibleTrigger className="flex-1 flex items-center justify-between hover:opacity-70 transition-opacity">
-                    <Label
-                      htmlFor={section.id}
-                      className="text-base font-medium cursor-pointer flex-1 text-left"
-                    >
-                      {section.name}
-                    </Label>
-                    <ChevronDown 
-                      className={`h-4 w-4 transition-transform duration-200 ${section.enabled ? 'rotate-180' : ''}`}
-                    />
-                  </CollapsibleTrigger>
+                  <Label
+                    htmlFor={section.id}
+                    className="text-base font-medium cursor-pointer flex-1"
+                  >
+                    {section.name}
+                  </Label>
                 </div>
 
-                <CollapsibleContent className="ml-7 space-y-3 pt-2">{section.enabled && (
-                  <>
+                {section.enabled && (
+                  <div className="ml-7 space-y-3 pt-2">
                     {section.fields.heading !== undefined && (
                       <div className="space-y-1.5">
                         <Label className="text-sm">Heading</Label>
@@ -376,12 +385,12 @@ const TemplateBuilder = () => {
                         ))}
                       </div>
                     )}
-                  </>
+                  </div>
                 )}
-                </CollapsibleContent>
-              </Collapsible>
+              </div>
             ))}
           </CardContent>
+          )}
         </Card>
 
         <Card>
