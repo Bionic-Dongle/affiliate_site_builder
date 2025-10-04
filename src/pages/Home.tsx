@@ -5,14 +5,23 @@ import CategoryGrid from "@/components/site/CategoryGrid";
 import Sidebar from "@/components/site/Sidebar";
 import Newsletter from "@/components/site/Newsletter";
 import Footer from "@/components/site/Footer";
-import SearchBar from "@/components/site/SearchBar";
+import Navbar from "@/components/site/Navbar";
 import CategoriesBar from "@/components/site/CategoriesBar";
 
 // This would come from template config in real implementation
 const mockConfig = {
+  navbar: {
+    enabled: true,
+    siteName: "My Site",
+    navItems: [
+      { label: "Home", path: "/" },
+      { label: "Reviews", path: "/reviews" },
+      { label: "Contact", path: "/contact" },
+    ],
+    showSearch: true,
+  },
   sections: [
     { type: "hero", config: { heading: "Welcome to Our Site", subheading: "Find the best products and reviews", buttonText: "Explore", buttonLink: "/blog" } },
-    { type: "search-bar", config: { heading: "Search" } },
     { type: "categories-bar", config: { heading: "Browse Categories" } },
     { type: "blog-grid", config: { heading: "Latest Articles", description: "Fresh insights and expert reviews" } },
     { type: "categories", config: { heading: "Shop by Category", description: "Find what you need", images: ["", "", "", "", "", ""] } },
@@ -40,8 +49,6 @@ const Home = () => {
         return <Sidebar key={section.type} {...section.config} />;
       case "newsletter":
         return <Newsletter key={section.type} {...section.config} />;
-      case "search-bar":
-        return <SearchBar key={section.type} {...section.config} />;
       case "categories-bar":
         return <CategoriesBar key={section.type} {...section.config} />;
       default:
@@ -51,6 +58,13 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      {config.navbar?.enabled && (
+        <Navbar
+          siteName={config.navbar.siteName}
+          navItems={config.navbar.navItems}
+          showSearch={config.navbar.showSearch}
+        />
+      )}
       {config.sections.map(renderSection)}
       <Footer />
     </div>

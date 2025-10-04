@@ -159,14 +159,6 @@ const TemplateBuilder = () => {
       },
     },
     {
-      id: "search-bar",
-      name: "Search Bar",
-      enabled: false,
-      fields: {
-        heading: "Search",
-      },
-    },
-    {
       id: "sidebar",
       name: "Sidebar",
       enabled: false,
