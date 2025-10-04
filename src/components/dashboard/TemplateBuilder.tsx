@@ -198,6 +198,50 @@ const TemplateBuilder = () => {
       },
     },
     {
+      id: "featured-products",
+      name: "Featured Products/Deals",
+      enabled: false,
+      fields: {
+        heading: "Top Picks This Week",
+        description: "Our hand-picked selection of the best deals",
+      },
+    },
+    {
+      id: "trust-badges",
+      name: "Trust Badges/Social Proof",
+      enabled: false,
+      fields: {
+        heading: "Trusted by Thousands",
+        images: ["", "", "", ""],
+      },
+    },
+    {
+      id: "testimonials",
+      name: "Testimonials",
+      enabled: false,
+      fields: {
+        heading: "What Our Readers Say",
+      },
+    },
+    {
+      id: "faq",
+      name: "FAQ Section",
+      enabled: false,
+      fields: {
+        heading: "Frequently Asked Questions",
+        description: "Everything you need to know",
+      },
+    },
+    {
+      id: "comparison-table",
+      name: "Product Comparison Table",
+      enabled: false,
+      fields: {
+        heading: "Compare Top Products",
+        description: "See how the best options stack up",
+      },
+    },
+    {
       id: "footer",
       name: "Footer",
       enabled: false,
