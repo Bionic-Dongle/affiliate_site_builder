@@ -49,7 +49,13 @@ interface NavItem {
 const TemplateBuilder = () => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  
+  const [typographyOpen, setTypographyOpen] = useState(true);
+  const [seoOpen, setSeoOpen] = useState(true);
+  const [advertisingOpen, setAdvertisingOpen] = useState(true);
   const [siteComponentsOpen, setSiteComponentsOpen] = useState(true);
+  const [navbarOpen, setNavbarOpen] = useState(true);
+  const [ctaOpen, setCtaOpen] = useState(true);
   
   const [headingFont, setHeadingFont] = useState("Inter");
   const [bodyFont, setBodyFont] = useState("Inter");
@@ -295,12 +301,26 @@ const TemplateBuilder = () => {
       <div className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Type className="h-5 w-5" />
-              Typography & Fonts
-            </CardTitle>
-            <CardDescription>Select fonts for your affiliate site</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Type className="h-5 w-5" />
+                  Typography & Fonts
+                </CardTitle>
+                <CardDescription>Select fonts for your affiliate site</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTypographyOpen(!typographyOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${typographyOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {typographyOpen && (
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Heading Font</Label>
@@ -350,16 +370,31 @@ const TemplateBuilder = () => {
               <p>Body text: <span>{bodyFont}</span></p>
             </div>
           </CardContent>
+          )}
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
-              SEO Settings
-            </CardTitle>
-            <CardDescription>Search engine optimization and analytics</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  SEO Settings
+                </CardTitle>
+                <CardDescription>Search engine optimization and analytics</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSeoOpen(!seoOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${seoOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {seoOpen && (
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Default Site Title</Label>
@@ -422,16 +457,31 @@ const TemplateBuilder = () => {
               </div>
             </div>
           </CardContent>
+          )}
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Advertising & Ad Zones
-            </CardTitle>
-            <CardDescription>Configure ad network and placements</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Advertising & Ad Zones
+                </CardTitle>
+                <CardDescription>Configure ad network and placements</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setAdvertisingOpen(!advertisingOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${advertisingOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {advertisingOpen && (
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Ad Network Script</Label>
@@ -487,6 +537,7 @@ const TemplateBuilder = () => {
               ))}
             </div>
           </CardContent>
+          )}
         </Card>
 
         <Card>
@@ -635,12 +686,26 @@ const TemplateBuilder = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Menu className="h-5 w-5" />
-              Navigation Bar
-            </CardTitle>
-            <CardDescription>Configure your site's navigation menu</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Menu className="h-5 w-5" />
+                  Navigation Bar
+                </CardTitle>
+                <CardDescription>Configure your site's navigation menu</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setNavbarOpen(!navbarOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${navbarOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {navbarOpen && (
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3 pb-3 border-b">
               <Checkbox
@@ -698,16 +763,31 @@ const TemplateBuilder = () => {
               </>
             )}
           </CardContent>
+          )}
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LinkIcon className="h-5 w-5" />
-              Affiliate CTAs & Buttons
-            </CardTitle>
-            <CardDescription>Manage your affiliate links and call-to-actions</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <LinkIcon className="h-5 w-5" />
+                  Affiliate CTAs & Buttons
+                </CardTitle>
+                <CardDescription>Manage your affiliate links and call-to-actions</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setCtaOpen(!ctaOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${ctaOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
           </CardHeader>
+          {ctaOpen && (
           <CardContent className="space-y-4">
             {ctaButtons.map((button, index) => (
               <div key={button.id} className="space-y-3 p-4 border rounded-lg bg-card">
@@ -768,6 +848,7 @@ const TemplateBuilder = () => {
               Add CTA Button
             </Button>
           </CardContent>
+          )}
         </Card>
       </div>
 
