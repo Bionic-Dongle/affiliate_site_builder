@@ -40,10 +40,24 @@ interface SectionConfig {
 
 interface CTAButton {
   id: string;
+  name: string; // Internal reference name
   text: string;
   affiliateUrl: string;
   affiliateId: string;
   trackingParams?: string;
+}
+
+interface CTAPlacement {
+  id: string;
+  ctaId: string; // Reference to CTA Library button
+  position: number; // For home page, position among sections
+  sectionId?: string; // Optional: tie to specific section
+}
+
+interface BlogCTAPlacement {
+  id: string;
+  ctaId: string;
+  position: 'after-intro' | 'mid-content' | 'before-conclusion' | 'end-of-post';
 }
 
 interface NavItem {
@@ -70,7 +84,10 @@ const TemplateBuilder = () => {
   const [customScriptsOpen, setCustomScriptsOpen] = useState(false);
   const [siteComponentsOpen, setSiteComponentsOpen] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
-  const [ctaOpen, setCtaOpen] = useState(false);
+  const [ctaLibraryOpen, setCtaLibraryOpen] = useState(false);
+  const [homeCtaPlacementsOpen, setHomeCtaPlacementsOpen] = useState(false);
+  const [blogCtaPlacementsOpen, setBlogCtaPlacementsOpen] = useState(false);
+  const [landingCtaPlacementsOpen, setLandingCtaPlacementsOpen] = useState(false);
   const [heroOpen, setHeroOpen] = useState(false);
   
   const [headingFont, setHeadingFont] = useState("Inter");
@@ -125,15 +142,22 @@ const TemplateBuilder = () => {
     { id: "nav-3", label: "Contact", path: "/contact" },
   ]);
   
-  const [ctaButtons, setCtaButtons] = useState<CTAButton[]>([
+  // CTA Library - reusable affiliate buttons
+  const [ctaLibrary, setCtaLibrary] = useState<CTAButton[]>([
     {
       id: "cta-1",
+      name: "Primary CTA",
       text: "Shop Now",
       affiliateUrl: "",
       affiliateId: "",
       trackingParams: "",
     },
   ]);
+
+  // CTA Placements for different page types
+  const [homeCtaPlacements, setHomeCtaPlacements] = useState<CTAPlacement[]>([]);
+  const [blogCtaPlacements, setBlogCtaPlacements] = useState<BlogCTAPlacement[]>([]);
+  const [landingCtaPlacements, setLandingCtaPlacements] = useState<CTAPlacement[]>([]);
 
   const [sections, setSections] = useState<SectionConfig[]>([
     {
@@ -339,11 +363,12 @@ const TemplateBuilder = () => {
     );
   };
 
-  const addCTAButton = () => {
-    setCtaButtons((prev) => [
+  const addCTAToLibrary = () => {
+    setCtaLibrary((prev) => [
       ...prev,
       {
         id: `cta-${prev.length + 1}`,
+        name: `CTA ${prev.length + 1}`,
         text: "Shop Now",
         affiliateUrl: "",
         affiliateId: "",
@@ -352,35 +377,151 @@ const TemplateBuilder = () => {
     ]);
   };
 
-  const removeCTAButton = (id: string) => {
-    setCtaButtons((prev) => prev.filter((btn) => btn.id !== id));
+  const removeCTAFromLibrary = (id: string) => {
+    setCtaLibrary((prev) => prev.filter((btn) => btn.id !== id));
+    // Also remove any placements using this CTA
+    setHomeCtaPlacements((prev) => prev.filter((p) => p.ctaId !== id));
+    setBlogCtaPlacements((prev) => prev.filter((p) => p.ctaId !== id));
+    setLandingCtaPlacements((prev) => prev.filter((p) => p.ctaId !== id));
   };
 
-  const updateCTAButton = (id: string, field: keyof CTAButton, value: string) => {
-    setCtaButtons((prev) =>
+  const updateCTAInLibrary = (id: string, field: keyof CTAButton, value: string) => {
+    setCtaLibrary((prev) =>
       prev.map((btn) => (btn.id === id ? { ...btn, [field]: value } : btn))
     );
   };
 
-  const moveCTAButtonUp = (id: string) => {
-    setCtaButtons((prev) => {
-      const index = prev.findIndex(btn => btn.id === id);
+  // Home Page CTA Placements
+  const addHomeCtaPlacement = () => {
+    if (ctaLibrary.length === 0) {
+      toast({
+        title: "No CTAs in library",
+        description: "Add a CTA to the library first",
+        variant: "destructive",
+      });
+      return;
+    }
+    setHomeCtaPlacements((prev) => [
+      ...prev,
+      {
+        id: `home-cta-${prev.length + 1}`,
+        ctaId: ctaLibrary[0].id,
+        position: prev.length + 1,
+      },
+    ]);
+  };
+
+  const removeHomeCtaPlacement = (id: string) => {
+    setHomeCtaPlacements((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateHomeCtaPlacement = (id: string, field: keyof CTAPlacement, value: any) => {
+    setHomeCtaPlacements((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    );
+  };
+
+  const moveHomeCtaPlacementUp = (id: string) => {
+    setHomeCtaPlacements((prev) => {
+      const index = prev.findIndex(p => p.id === id);
       if (index <= 0) return prev;
       
-      const newButtons = [...prev];
-      [newButtons[index - 1], newButtons[index]] = [newButtons[index], newButtons[index - 1]];
-      return newButtons;
+      const newPlacements = [...prev];
+      [newPlacements[index - 1], newPlacements[index]] = [newPlacements[index], newPlacements[index - 1]];
+      return newPlacements;
     });
   };
 
-  const moveCTAButtonDown = (id: string) => {
-    setCtaButtons((prev) => {
-      const index = prev.findIndex(btn => btn.id === id);
+  const moveHomeCtaPlacementDown = (id: string) => {
+    setHomeCtaPlacements((prev) => {
+      const index = prev.findIndex(p => p.id === id);
       if (index >= prev.length - 1) return prev;
       
-      const newButtons = [...prev];
-      [newButtons[index], newButtons[index + 1]] = [newButtons[index + 1], newButtons[index]];
-      return newButtons;
+      const newPlacements = [...prev];
+      [newPlacements[index], newPlacements[index + 1]] = [newPlacements[index + 1], newPlacements[index]];
+      return newPlacements;
+    });
+  };
+
+  // Blog CTA Placements
+  const addBlogCtaPlacement = () => {
+    if (ctaLibrary.length === 0) {
+      toast({
+        title: "No CTAs in library",
+        description: "Add a CTA to the library first",
+        variant: "destructive",
+      });
+      return;
+    }
+    setBlogCtaPlacements((prev) => [
+      ...prev,
+      {
+        id: `blog-cta-${prev.length + 1}`,
+        ctaId: ctaLibrary[0].id,
+        position: 'after-intro',
+      },
+    ]);
+  };
+
+  const removeBlogCtaPlacement = (id: string) => {
+    setBlogCtaPlacements((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateBlogCtaPlacement = (id: string, field: keyof BlogCTAPlacement, value: any) => {
+    setBlogCtaPlacements((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    );
+  };
+
+  // Landing Page CTA Placements
+  const addLandingCtaPlacement = () => {
+    if (ctaLibrary.length === 0) {
+      toast({
+        title: "No CTAs in library",
+        description: "Add a CTA to the library first",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLandingCtaPlacements((prev) => [
+      ...prev,
+      {
+        id: `landing-cta-${prev.length + 1}`,
+        ctaId: ctaLibrary[0].id,
+        position: prev.length + 1,
+      },
+    ]);
+  };
+
+  const removeLandingCtaPlacement = (id: string) => {
+    setLandingCtaPlacements((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateLandingCtaPlacement = (id: string, field: keyof CTAPlacement, value: any) => {
+    setLandingCtaPlacements((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    );
+  };
+
+  const moveLandingCtaPlacementUp = (id: string) => {
+    setLandingCtaPlacements((prev) => {
+      const index = prev.findIndex(p => p.id === id);
+      if (index <= 0) return prev;
+      
+      const newPlacements = [...prev];
+      [newPlacements[index - 1], newPlacements[index]] = [newPlacements[index], newPlacements[index - 1]];
+      return newPlacements;
+    });
+  };
+
+  const moveLandingCtaPlacementDown = (id: string) => {
+    setLandingCtaPlacements((prev) => {
+      const index = prev.findIndex(p => p.id === id);
+      if (index >= prev.length - 1) return prev;
+      
+      const newPlacements = [...prev];
+      [newPlacements[index], newPlacements[index + 1]] = [newPlacements[index + 1], newPlacements[index]];
+      return newPlacements;
     });
   };
 
@@ -422,7 +563,14 @@ const TemplateBuilder = () => {
         logoText: navbarLogoText,
         logoImage: navbarLogoImage,
       } : { enabled: false },
-      ctaButtons: ctaButtons,
+      cta: {
+        library: ctaLibrary,
+        placements: {
+          home: homeCtaPlacements,
+          blog: blogCtaPlacements,
+          landing: landingCtaPlacements,
+        },
+      },
       sections: enabledSections.map((section) => ({
         type: section.id,
         config: section.fields,
@@ -472,13 +620,17 @@ const TemplateBuilder = () => {
       { id: "nav-2", label: "Reviews", path: "/reviews" },
       { id: "nav-3", label: "Contact", path: "/contact" },
     ]);
-    setCtaButtons([{
+    setCtaLibrary([{
       id: "cta-1",
+      name: "Primary CTA",
       text: "Shop Now",
       affiliateUrl: "",
       affiliateId: "",
       trackingParams: "",
     }]);
+    setHomeCtaPlacements([]);
+    setBlogCtaPlacements([]);
+    setLandingCtaPlacements([]);
     
     toast({
       title: "New project created",
@@ -598,8 +750,11 @@ const TemplateBuilder = () => {
       setNavbarLogoText(config.navbar.logoText || "My Site");
       setNavbarLogoImage(config.navbar.logoImage || "");
     }
-    if (config?.ctaButtons) {
-      setCtaButtons(config.ctaButtons);
+    if (config?.cta) {
+      setCtaLibrary(config.cta.library || ctaLibrary);
+      setHomeCtaPlacements(config.cta.placements?.home || []);
+      setBlogCtaPlacements(config.cta.placements?.blog || []);
+      setLandingCtaPlacements(config.cta.placements?.landing || []);
     }
     if (config?.sections) {
       const loadedSections = sections.map(section => {
@@ -1623,64 +1778,53 @@ const TemplateBuilder = () => {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <LinkIcon className="h-5 w-5" />
-                  Affiliate CTAs & Buttons
+                  CTA Library
                 </CardTitle>
-                <CardDescription>Manage your affiliate links and call-to-actions</CardDescription>
+                <CardDescription>Define reusable affiliate buttons</CardDescription>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setCtaOpen(!ctaOpen)}
+                onClick={() => setCtaLibraryOpen(!ctaLibraryOpen)}
               >
                 <ChevronDown 
-                  className={`h-5 w-5 transition-transform duration-200 ${ctaOpen ? 'rotate-180' : ''}`}
+                  className={`h-5 w-5 transition-transform duration-200 ${ctaLibraryOpen ? 'rotate-180' : ''}`}
                 />
               </Button>
             </div>
           </CardHeader>
-          {ctaOpen && (
+          {ctaLibraryOpen && (
           <CardContent className="space-y-4">
-            {ctaButtons.map((button, index) => (
+            {ctaLibrary.map((button, index) => (
               <div key={button.id} className="space-y-3 p-4 border rounded-lg bg-card">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium">CTA Button {index + 1}</Label>
-                  <div className="flex gap-1">
+                  <Label className="text-sm font-medium">CTA {index + 1}</Label>
+                  {ctaLibrary.length > 1 && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => moveCTAButtonUp(button.id)}
-                      disabled={index === 0}
-                      className="h-7 w-7 p-0"
+                      onClick={() => removeCTAFromLibrary(button.id)}
                     >
-                      <ArrowUp className="h-3 w-3" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => moveCTAButtonDown(button.id)}
-                      disabled={index === ctaButtons.length - 1}
-                      className="h-7 w-7 p-0"
-                    >
-                      <ArrowDown className="h-3 w-3" />
-                    </Button>
-                    {ctaButtons.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeCTAButton(button.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
+                  )}
                 </div>
                 
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Internal Name</Label>
+                  <Input
+                    placeholder="Primary CTA, Secondary CTA, etc."
+                    value={button.name}
+                    onChange={(e) => updateCTAInLibrary(button.id, "name", e.target.value)}
+                  />
+                </div>
+
                 <div className="space-y-1.5">
                   <Label className="text-xs">Button Text</Label>
                   <Input
                     placeholder="Shop Now, Buy Here, etc."
                     value={button.text}
-                    onChange={(e) => updateCTAButton(button.id, "text", e.target.value)}
+                    onChange={(e) => updateCTAInLibrary(button.id, "text", e.target.value)}
                   />
                 </div>
 
@@ -1689,7 +1833,7 @@ const TemplateBuilder = () => {
                   <Input
                     placeholder="https://example.com/product"
                     value={button.affiliateUrl}
-                    onChange={(e) => updateCTAButton(button.id, "affiliateUrl", e.target.value)}
+                    onChange={(e) => updateCTAInLibrary(button.id, "affiliateUrl", e.target.value)}
                   />
                 </div>
 
@@ -1699,7 +1843,7 @@ const TemplateBuilder = () => {
                     <Input
                       placeholder="your-affiliate-id"
                       value={button.affiliateId}
-                      onChange={(e) => updateCTAButton(button.id, "affiliateId", e.target.value)}
+                      onChange={(e) => updateCTAInLibrary(button.id, "affiliateId", e.target.value)}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -1707,16 +1851,272 @@ const TemplateBuilder = () => {
                     <Input
                       placeholder="utm_source=..."
                       value={button.trackingParams || ""}
-                      onChange={(e) => updateCTAButton(button.id, "trackingParams", e.target.value)}
+                      onChange={(e) => updateCTAInLibrary(button.id, "trackingParams", e.target.value)}
                     />
                   </div>
                 </div>
               </div>
             ))}
             
-            <Button onClick={addCTAButton} variant="outline" className="w-full">
+            <Button onClick={addCTAToLibrary} variant="outline" className="w-full">
               <Plus className="mr-2 h-4 w-4" />
-              Add CTA Button
+              Add to Library
+            </Button>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Home Page CTA Placements */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Layout className="h-5 w-5" />
+                  Home Page CTAs
+                </CardTitle>
+                <CardDescription>Position CTAs on your home page</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setHomeCtaPlacementsOpen(!homeCtaPlacementsOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${homeCtaPlacementsOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
+          </CardHeader>
+          {homeCtaPlacementsOpen && (
+          <CardContent className="space-y-4">
+            {homeCtaPlacements.map((placement, index) => (
+              <div key={placement.id} className="space-y-3 p-4 border rounded-lg bg-card">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Placement {index + 1}</Label>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => moveHomeCtaPlacementUp(placement.id)}
+                      disabled={index === 0}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ArrowUp className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => moveHomeCtaPlacementDown(placement.id)}
+                      disabled={index === homeCtaPlacements.length - 1}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ArrowDown className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeHomeCtaPlacement(placement.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Select CTA</Label>
+                  <Select 
+                    value={placement.ctaId} 
+                    onValueChange={(value) => updateHomeCtaPlacement(placement.id, "ctaId", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-50">
+                      {ctaLibrary.map(cta => (
+                        <SelectItem key={cta.id} value={cta.id}>
+                          {cta.name} - "{cta.text}"
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ))}
+            
+            <Button onClick={addHomeCtaPlacement} variant="outline" className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Home Page CTA
+            </Button>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Blog CTA Placements */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Blog Post CTAs
+                </CardTitle>
+                <CardDescription>Position CTAs within blog posts</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setBlogCtaPlacementsOpen(!blogCtaPlacementsOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${blogCtaPlacementsOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
+          </CardHeader>
+          {blogCtaPlacementsOpen && (
+          <CardContent className="space-y-4">
+            {blogCtaPlacements.map((placement, index) => (
+              <div key={placement.id} className="space-y-3 p-4 border rounded-lg bg-card">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Placement {index + 1}</Label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeBlogCtaPlacement(placement.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Select CTA</Label>
+                  <Select 
+                    value={placement.ctaId} 
+                    onValueChange={(value) => updateBlogCtaPlacement(placement.id, "ctaId", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-50">
+                      {ctaLibrary.map(cta => (
+                        <SelectItem key={cta.id} value={cta.id}>
+                          {cta.name} - "{cta.text}"
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Position in Post</Label>
+                  <Select 
+                    value={placement.position} 
+                    onValueChange={(value) => updateBlogCtaPlacement(placement.id, "position", value as any)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-50">
+                      <SelectItem value="after-intro">After Introduction</SelectItem>
+                      <SelectItem value="mid-content">Mid Content</SelectItem>
+                      <SelectItem value="before-conclusion">Before Conclusion</SelectItem>
+                      <SelectItem value="end-of-post">End of Post</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ))}
+            
+            <Button onClick={addBlogCtaPlacement} variant="outline" className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Blog CTA
+            </Button>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Landing Page CTA Placements */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <ExternalLink className="h-5 w-5" />
+                  Landing Page CTAs
+                </CardTitle>
+                <CardDescription>Position CTAs on landing pages</CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLandingCtaPlacementsOpen(!landingCtaPlacementsOpen)}
+              >
+                <ChevronDown 
+                  className={`h-5 w-5 transition-transform duration-200 ${landingCtaPlacementsOpen ? 'rotate-180' : ''}`}
+                />
+              </Button>
+            </div>
+          </CardHeader>
+          {landingCtaPlacementsOpen && (
+          <CardContent className="space-y-4">
+            {landingCtaPlacements.map((placement, index) => (
+              <div key={placement.id} className="space-y-3 p-4 border rounded-lg bg-card">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">Placement {index + 1}</Label>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => moveLandingCtaPlacementUp(placement.id)}
+                      disabled={index === 0}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ArrowUp className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => moveLandingCtaPlacementDown(placement.id)}
+                      disabled={index === landingCtaPlacements.length - 1}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ArrowDown className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeLandingCtaPlacement(placement.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Select CTA</Label>
+                  <Select 
+                    value={placement.ctaId} 
+                    onValueChange={(value) => updateLandingCtaPlacement(placement.id, "ctaId", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card z-50">
+                      {ctaLibrary.map(cta => (
+                        <SelectItem key={cta.id} value={cta.id}>
+                          {cta.name} - "{cta.text}"
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ))}
+            
+            <Button onClick={addLandingCtaPlacement} variant="outline" className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Landing Page CTA
             </Button>
           </CardContent>
           )}
