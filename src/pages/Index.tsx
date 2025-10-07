@@ -1,8 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Zap, TrendingUp, Rocket } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/dashboard");
+    }
+  }, [user, loading, navigate]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center max-w-2xl px-4">
@@ -20,14 +30,16 @@ const Index = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button asChild size="lg">
-            <Link to="/dashboard">
+            <Link to="/auth">
               <LayoutDashboard className="mr-2 h-5 w-5" />
-              Open Dashboard
+              Get Started
             </Link>
           </Button>
-          <Button variant="outline" size="lg">
-            <Rocket className="mr-2 h-5 w-5" />
-            View Templates
+          <Button variant="outline" size="lg" asChild>
+            <Link to="/home">
+              <Rocket className="mr-2 h-5 w-5" />
+              View Demo
+            </Link>
           </Button>
         </div>
 
