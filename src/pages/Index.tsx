@@ -8,11 +8,12 @@ const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate("/dashboard");
-    }
-  }, [user, loading, navigate]);
+  // Auth disabled for development
+  // useEffect(() => {
+  //   if (!loading && user) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [user, loading, navigate]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center max-w-2xl px-4">
