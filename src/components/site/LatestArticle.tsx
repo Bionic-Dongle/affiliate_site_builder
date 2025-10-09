@@ -39,12 +39,14 @@ const LatestArticle = ({ heading = "Latest Articles", description = "Check out o
           </div>
           
           <div className="space-y-6">
-            {articles.map((article) => (
+            {articles.map((article, index) => (
               <div 
                 key={article.id} 
-                className="flex flex-col md:flex-row bg-card rounded-2xl overflow-hidden border hover:shadow-lg transition-shadow"
+                className={`flex flex-col md:flex-row bg-card rounded-2xl overflow-hidden border hover:shadow-lg transition-shadow ${
+                  index === 0 ? 'md:min-h-[280px]' : ''
+                }`}
               >
-                <div className="w-full md:w-1/3 h-48 bg-muted">
+                <div className={`w-full md:w-1/3 bg-muted ${index === 0 ? 'h-64 md:h-auto' : 'h-48'}`}>
                   {article.image ? (
                     <img 
                       src={article.image} 
@@ -59,7 +61,9 @@ const LatestArticle = ({ heading = "Latest Articles", description = "Check out o
                 </div>
                 <div className="p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-bold mb-2">{article.title}</h3>
+                    <h3 className={`font-bold mb-2 ${index === 0 ? 'text-2xl' : 'text-xl'}`}>
+                      {article.title}
+                    </h3>
                     <p className="text-muted-foreground text-sm mb-4">{article.excerpt}</p>
                   </div>
                   <a 
@@ -71,6 +75,16 @@ const LatestArticle = ({ heading = "Latest Articles", description = "Check out o
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <a 
+              href="/blog" 
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+            >
+              <span>To read more articles, visit our blog</span>
+              <span>→</span>
+            </a>
           </div>
         </div>
       </div>
