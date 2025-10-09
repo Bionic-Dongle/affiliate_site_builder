@@ -10,6 +10,13 @@ import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
+  
+  // Auth disabled - redirect to dashboard
+  navigate("/dashboard");
+  
+  return null;
+  
+  /*
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -149,6 +156,7 @@ const Auth = () => {
       </Card>
     </div>
   );
+  */
 };
 
 export default Auth;
