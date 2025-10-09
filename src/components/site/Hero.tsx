@@ -14,15 +14,13 @@ const Hero = ({ heading, subheading, buttonText, buttonLink, backgroundImage, sh
       className="relative min-h-[500px] flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10"
       style={backgroundImage ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
     >
-      <div className="container mx-auto px-4 text-center relative z-10">
-        <div className="inline-block">
-          <div 
-            className="backdrop-blur-md rounded-2xl px-8 py-6 mb-8"
-            style={{ backgroundColor: `hsl(var(--background) / ${overlayOpacity})` }}
-          >
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">{heading}</h1>
-            <p className="text-xl md:text-2xl text-muted-foreground">{subheading}</p>
-          </div>
+      <div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center">
+        <div 
+          className="backdrop-blur-md rounded-2xl px-8 py-6 mb-8 inline-block"
+          style={{ backgroundColor: `hsl(var(--background) / ${overlayOpacity})` }}
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">{heading}</h1>
+          <p className="text-xl md:text-2xl text-muted-foreground">{subheading}</p>
         </div>
         {showCTA && buttonText && buttonLink && (
           <a 
