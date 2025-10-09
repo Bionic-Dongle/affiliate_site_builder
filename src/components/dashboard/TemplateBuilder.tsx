@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, Layout, Link as LinkIcon, Plus, Trash2, Menu, ChevronDown, Type, Search, TrendingUp, FileText, ExternalLink, Save, FolderOpen, FilePlus, Code, ArrowUp, ArrowDown } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +28,7 @@ interface SectionConfig {
     buttonText?: string;
     buttonLink?: string;
     backgroundImage?: string;
+    overlayOpacity?: number;
     showCTA?: boolean;
     images?: string[];
     categories?: Array<{ name: string; iconName: string }>;
@@ -1603,6 +1605,27 @@ const TemplateBuilder = () => {
                             }
                           />
                         </div>
+                        {section.fields.backgroundImage && (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Label className="text-sm">Text Overlay Opacity</Label>
+                              <span className="text-sm text-muted-foreground">{Math.round((section.fields.overlayOpacity ?? 0.5) * 100)}%</span>
+                            </div>
+                            <Slider
+                              value={[(section.fields.overlayOpacity ?? 0.5) * 100]}
+                              onValueChange={(value) =>
+                                updateField(section.id, "overlayOpacity", value[0] / 100)
+                              }
+                              min={0}
+                              max={100}
+                              step={5}
+                              className="w-full"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Adjust the darkness of the text background overlay
+                            </p>
+                          </div>
+                        )}
                       </>
                     ) : (
                       <>
