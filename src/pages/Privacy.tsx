@@ -1,22 +1,26 @@
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTemplate } from "@/contexts/TemplateContext";
+import TypographyStyles from "@/components/TypographyStyles";
 
 const Privacy = () => {
-  const [siteName] = useState("Peak Reviews"); // Will come from config later
+  const { config } = useTemplate();
   const [contactEmail] = useState("contact@peakreviews.com"); // Will come from config later
   const [effectiveDate] = useState("January 1, 2025"); // Will come from config later
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        siteName={siteName}
-        navItems={[
-          { label: "Home", path: "/" },
-          { label: "Blog", path: "/blog" },
-        ]}
-        showSearch={true}
-      />
+      <TypographyStyles />
+      {config.navbar?.enabled && (
+        <Navbar
+          siteName={config.navbar.siteName}
+          logoType={config.navbar.logoType}
+          logoImage={config.navbar.logoImage}
+          navItems={config.navbar.navItems}
+          showSearch={config.navbar.showSearch}
+        />
+      )}
 
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -29,7 +33,7 @@ const Privacy = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">1. Introduction</h2>
               <p>
-                Welcome to {siteName}. We respect your privacy and are committed to protecting your personal data. 
+                Welcome to {config.navbar?.siteName}. We respect your privacy and are committed to protecting your personal data.
                 This privacy policy will inform you about how we handle your personal data when you visit our website 
                 and tell you about your privacy rights.
               </p>

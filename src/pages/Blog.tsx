@@ -8,13 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { CTARenderer, CTAPlacement, CTADefinition } from "@/components/site/CTAButton";
+import { useTemplate } from "@/contexts/TemplateContext";
+import TypographyStyles from "@/components/TypographyStyles";
 
 const Blog = () => {
-  // Mock CTA config - would come from template builder
-  const [ctaConfig] = useState({
-    ctaLibrary: [] as CTADefinition[],
-    blogCtaPlacements: [] as CTAPlacement[],
-  });
+  const { config } = useTemplate();
 
   // Mock blog posts
   const posts = [
@@ -112,15 +110,16 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        siteName="Peak Reviews"
-        navItems={[
-          { label: "Home", path: "/" },
-          { label: "Blog", path: "/blog" },
-          { label: "Reviews", path: "/reviews" },
-        ]}
-        showSearch={true}
-      />
+      <TypographyStyles />
+      {config.navbar?.enabled && (
+        <Navbar
+          siteName={config.navbar.siteName}
+          logoType={config.navbar.logoType}
+          logoImage={config.navbar.logoImage}
+          navItems={config.navbar.navItems}
+          showSearch={config.navbar.showSearch}
+        />
+      )}
 
       {/* Header Section */}
       <section className="bg-gradient-to-br from-primary/10 to-accent/10 py-12">
@@ -130,8 +129,8 @@ const Blog = () => {
           
           {/* CTAs at position 0 - in header */}
           <CTARenderer 
-            placements={ctaConfig.blogCtaPlacements} 
-            ctaLibrary={ctaConfig.ctaLibrary} 
+            placements={config.blogCtaPlacements} 
+            ctaLibrary={config.ctaLibrary} 
             position={0}
             className="mt-6"
           />
@@ -165,8 +164,8 @@ const Blog = () => {
         <div className="container mx-auto px-4">
           {/* CTAs at position 1 - before blog grid */}
           <CTARenderer 
-            placements={ctaConfig.blogCtaPlacements} 
-            ctaLibrary={ctaConfig.ctaLibrary} 
+            placements={config.blogCtaPlacements} 
+            ctaLibrary={config.ctaLibrary} 
             position={1}
             className="mb-8"
           />
@@ -217,8 +216,8 @@ const Blog = () => {
 
               {/* CTAs at position 2 - after blog posts */}
               <CTARenderer 
-                placements={ctaConfig.blogCtaPlacements} 
-                ctaLibrary={ctaConfig.ctaLibrary} 
+                placements={config.blogCtaPlacements} 
+                ctaLibrary={config.ctaLibrary} 
                 position={2}
                 className="my-8"
               />

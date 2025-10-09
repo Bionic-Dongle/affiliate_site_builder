@@ -1,22 +1,26 @@
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import { useState } from "react";
+import { useTemplate } from "@/contexts/TemplateContext";
+import TypographyStyles from "@/components/TypographyStyles";
 
 const AffiliateDisclaimer = () => {
-  const [siteName] = useState("Peak Reviews"); // Will come from config later
+  const { config } = useTemplate();
   const [contactEmail] = useState("contact@peakreviews.com"); // Will come from config later
   const [effectiveDate] = useState("January 1, 2025"); // Will come from config later
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        siteName={siteName}
-        navItems={[
-          { label: "Home", path: "/" },
-          { label: "Blog", path: "/blog" },
-        ]}
-        showSearch={true}
-      />
+      <TypographyStyles />
+      {config.navbar?.enabled && (
+        <Navbar
+          siteName={config.navbar.siteName}
+          logoType={config.navbar.logoType}
+          logoImage={config.navbar.logoImage}
+          navItems={config.navbar.navItems}
+          showSearch={config.navbar.showSearch}
+        />
+      )}
 
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -37,7 +41,7 @@ const AffiliateDisclaimer = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">What Are Affiliate Links?</h2>
               <p>
-                {siteName} participates in various affiliate marketing programs. This means that when you click on certain links on 
+                {config.navbar?.siteName} participates in various affiliate marketing programs. This means that when you click on certain links on
                 our website and make a purchase, we may receive a commission from the merchant at no additional cost to you.
               </p>
               <p className="mt-4">
@@ -113,7 +117,7 @@ const AffiliateDisclaimer = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">Amazon Associates Disclosure</h2>
               <p>
-                {siteName} is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to 
+                {config.navbar?.siteName} is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to
                 provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
               </p>
               <p className="mt-4">
@@ -170,7 +174,7 @@ const AffiliateDisclaimer = () => {
                 Email: <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>
               </p>
               <p className="mt-4">
-                Thank you for supporting {siteName} and allowing us to continue providing valuable content and honest product reviews.
+                Thank you for supporting {config.navbar?.siteName} and allowing us to continue providing valuable content and honest product reviews.
               </p>
             </section>
           </div>

@@ -7,6 +7,12 @@ export interface CTAPlacement {
   position: number;
 }
 
+export interface BlogCTAPlacement {
+  id: string;
+  ctaId: string;
+  position: 'after-intro' | 'mid-content' | 'before-conclusion' | 'end-of-post';
+}
+
 export interface CTADefinition {
   id: string;
   name: string;
@@ -44,9 +50,9 @@ export const CTAButton = ({ cta, className = "" }: CTAButtonProps) => {
 };
 
 interface CTARendererProps {
-  placements: CTAPlacement[];
+  placements: CTAPlacement[] | BlogCTAPlacement[];
   ctaLibrary: CTADefinition[];
-  position: number;
+  position: number | string;
   className?: string;
 }
 

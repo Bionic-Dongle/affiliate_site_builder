@@ -1,22 +1,26 @@
 import Navbar from "@/components/site/Navbar";
 import Footer from "@/components/site/Footer";
 import { useState } from "react";
+import { useTemplate } from "@/contexts/TemplateContext";
+import TypographyStyles from "@/components/TypographyStyles";
 
 const Terms = () => {
-  const [siteName] = useState("Peak Reviews"); // Will come from config later
+  const { config } = useTemplate();
   const [contactEmail] = useState("contact@peakreviews.com"); // Will come from config later
   const [effectiveDate] = useState("January 1, 2025"); // Will come from config later
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        siteName={siteName}
-        navItems={[
-          { label: "Home", path: "/" },
-          { label: "Blog", path: "/blog" },
-        ]}
-        showSearch={true}
-      />
+      <TypographyStyles />
+      {config.navbar?.enabled && (
+        <Navbar
+          siteName={config.navbar.siteName}
+          logoType={config.navbar.logoType}
+          logoImage={config.navbar.logoImage}
+          navItems={config.navbar.navItems}
+          showSearch={config.navbar.showSearch}
+        />
+      )}
 
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -29,7 +33,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">1. Agreement to Terms</h2>
               <p>
-                By accessing and using {siteName}, you accept and agree to be bound by the terms and provision of this agreement. 
+                By accessing and using {config.navbar?.siteName}, you accept and agree to be bound by the terms and provision of this agreement.
                 If you do not agree to abide by the terms of this agreement, you are not authorized to use or access this website.
               </p>
             </section>
@@ -37,7 +41,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">2. Use License</h2>
               <p>
-                Permission is granted to temporarily access the materials (information or software) on {siteName} for personal, 
+                Permission is granted to temporarily access the materials (information or software) on {config.navbar?.siteName} for personal,
                 non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this 
                 license you may not:
               </p>
@@ -53,12 +57,12 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">3. Disclaimer</h2>
               <p>
-                The materials on {siteName} are provided on an 'as is' basis. {siteName} makes no warranties, expressed or implied, 
+                The materials on {config.navbar?.siteName} are provided on an 'as is' basis. {config.navbar?.siteName} makes no warranties, expressed or implied,
                 and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions 
                 of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
               </p>
               <p className="mt-4">
-                Further, {siteName} does not warrant or make any representations concerning the accuracy, likely results, or reliability 
+                Further, {config.navbar?.siteName} does not warrant or make any representations concerning the accuracy, likely results, or reliability
                 of the use of the materials on its website or otherwise relating to such materials or on any sites linked to this site.
               </p>
             </section>
@@ -66,7 +70,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">4. Product Reviews and Recommendations</h2>
               <p>
-                All product reviews, comparisons, and recommendations on {siteName} represent our honest opinions and experiences. 
+                All product reviews, comparisons, and recommendations on {config.navbar?.siteName} represent our honest opinions and experiences.
                 However, individual results and experiences may vary. We make no guarantees regarding the performance, quality, 
                 or suitability of any products reviewed on this site.
               </p>
@@ -79,7 +83,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">5. Affiliate Relationships</h2>
               <p>
-                {siteName} participates in various affiliate marketing programs. This means we may receive a commission when you click 
+                {config.navbar?.siteName} participates in various affiliate marketing programs. This means we may receive a commission when you click
                 on or make purchases via affiliate links on our website. These commissions come at no additional cost to you.
               </p>
               <p className="mt-4">
@@ -91,7 +95,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">6. User Content</h2>
               <p>
-                If you submit comments, reviews, or other content to {siteName}, you grant us a non-exclusive, royalty-free, 
+                If you submit comments, reviews, or other content to {config.navbar?.siteName}, you grant us a non-exclusive, royalty-free,
                 perpetual, and worldwide license to use, reproduce, modify, and distribute such content.
               </p>
               <p className="mt-4">
@@ -106,7 +110,7 @@ const Terms = () => {
               <ul className="list-disc pl-6 space-y-2">
                 <li>In any way that violates any applicable national or international law or regulation</li>
                 <li>To transmit, or procure the sending of, any advertising or promotional material without our prior written consent</li>
-                <li>To impersonate or attempt to impersonate {siteName}, an employee, another user, or any other person or entity</li>
+                <li>To impersonate or attempt to impersonate {config.navbar?.siteName}, an employee, another user, or any other person or entity</li>
                 <li>In any way that infringes upon the rights of others, or in any way is illegal, threatening, fraudulent, or harmful</li>
                 <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the website</li>
               </ul>
@@ -115,16 +119,16 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">8. Limitations</h2>
               <p>
-                In no event shall {siteName} or its suppliers be liable for any damages (including, without limitation, damages for loss 
+                In no event shall {config.navbar?.siteName} or its suppliers be liable for any damages (including, without limitation, damages for loss 
                 of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website, 
-                even if {siteName} or an authorized representative has been notified orally or in writing of the possibility of such damage.
+                even if {config.navbar?.siteName} or an authorized representative has been notified orally or in writing of the possibility of such damage.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">9. External Links</h2>
               <p>
-                {siteName} may contain links to external websites that are not provided or maintained by us. Please note that we do not 
+                {config.navbar?.siteName} may contain links to external websites that are not provided or maintained by us. Please note that we do not
                 guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.
               </p>
               <p className="mt-4">
@@ -135,7 +139,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mt-8 mb-4">10. Modifications</h2>
               <p>
-                {siteName} may revise these terms of service at any time without notice. By using this website, you are agreeing to be 
+                {config.navbar?.siteName} may revise these terms of service at any time without notice. By using this website, you are agreeing to be
                 bound by the then current version of these terms of service.
               </p>
             </section>
