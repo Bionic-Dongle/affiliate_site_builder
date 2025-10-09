@@ -5,7 +5,8 @@ import ContentGenerator from "@/components/dashboard/ContentGenerator";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 import SiteManager from "@/components/dashboard/SiteManager";
 import TemplateBuilder from "@/components/dashboard/TemplateBuilder";
-import { LayoutDashboard, FileJson, BarChart3, Globe, Layout, Moon, Sun, LogOut } from "lucide-react";
+import ResourceManager from "@/components/dashboard/ResourceManager";
+import { LayoutDashboard, FileJson, BarChart3, Globe, Layout, Moon, Sun, LogOut, BookmarkPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/hooks/useAuth";
@@ -70,7 +71,7 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="generator" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">{/* centered with mx-auto */}
+          <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto">
             <TabsTrigger value="generator" className="gap-2">
               <FileJson className="h-4 w-4" />
               Content
@@ -78,6 +79,10 @@ const Dashboard = () => {
             <TabsTrigger value="template" className="gap-2">
               <Layout className="h-4 w-4" />
               Template
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="gap-2">
+              <BookmarkPlus className="h-4 w-4" />
+              Resources
             </TabsTrigger>
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -95,6 +100,10 @@ const Dashboard = () => {
 
           <TabsContent value="template" className="mt-6">
             <TemplateBuilder />
+          </TabsContent>
+
+          <TabsContent value="resources" className="mt-6">
+            <ResourceManager />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6">
