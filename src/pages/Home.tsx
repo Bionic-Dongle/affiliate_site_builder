@@ -6,8 +6,11 @@ import Newsletter from "@/components/site/Newsletter";
 import Footer from "@/components/site/Footer";
 import Navbar from "@/components/site/Navbar";
 import CategoriesBar from "@/components/site/CategoriesBar";
+import TrustBadges from "@/components/site/TrustBadges";
+import LatestArticle from "@/components/site/LatestArticle";
 import { CTARenderer } from "@/components/site/CTAButton";
 import { useTemplate } from "@/contexts/TemplateContext";
+import TypographyStyles from "@/components/TypographyStyles";
 
 const Home = () => {
   const { config } = useTemplate();
@@ -28,6 +31,10 @@ const Home = () => {
         return <CategoriesBar key={section.type} {...section.config} />;
       case "footer":
         return <Footer key={section.type} {...section.config} />;
+      case "trust-badges":
+        return <TrustBadges key={section.type} {...section.config} />;
+      case "latest-article":
+        return <LatestArticle key={section.type} {...section.config} />;
       default:
         return null;
     }
@@ -35,6 +42,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <TypographyStyles />
       {config.navbar?.enabled && (
         <Navbar
           siteName={config.navbar.siteName}

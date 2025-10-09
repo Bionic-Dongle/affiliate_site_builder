@@ -221,17 +221,27 @@ const TemplateBuilder = () => {
       },
     },
     {
+      id: "latest-article",
+      name: "Latest Article/Featured Post",
+      enabled: false,
+      order: 5,
+      fields: {
+        heading: "Latest Article",
+        description: "Check out our most recent post",
+      },
+    },
+    {
       id: "blog-grid",
       name: "Blog Posts Grid",
       enabled: false,
-      order: 5,
+      order: 6,
       fields: {},
     },
     {
       id: "categories",
       name: "Category Grid",
       enabled: false,
-      order: 6,
+      order: 7,
       fields: {
         heading: "Find Your Peak",
         description: "Explore our carefully curated categories",
@@ -598,6 +608,25 @@ const TemplateBuilder = () => {
     };
     return JSON.stringify(config, null, 2);
   };
+
+  // Sync navbar items with page settings
+  useEffect(() => {
+    const updatedNavItems: NavItem[] = [
+      { id: "nav-home", label: "Home", path: "/" }
+    ];
+    
+    Object.entries(pageSettings).forEach(([key, settings]) => {
+      if (enabledPages[key as keyof typeof enabledPages] && settings.showInNav) {
+        updatedNavItems.push({
+          id: `nav-${key}`,
+          label: settings.title,
+          path: settings.slug
+        });
+      }
+    });
+    
+    setNavItems(updatedNavItems);
+  }, [pageSettings, enabledPages]);
 
   // Sync to context whenever state changes
   useEffect(() => {
