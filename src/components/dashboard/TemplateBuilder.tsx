@@ -758,11 +758,14 @@ const TemplateBuilder = () => {
       }
     } else {
       // Create new
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { data, error } = await supabase
         .from('projects')
         .insert({ 
           name: projectName,
           config: config,
+          user_id: user?.id,
         })
         .select()
         .single();
