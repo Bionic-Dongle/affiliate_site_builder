@@ -5,9 +5,9 @@ const Footer = () => {
   const { config } = useTemplate();
 
   return (
-    <footer className="py-12 bg-muted/30 border-t">
+    <footer className="w-full py-12 bg-muted/30 border-t">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold mb-4">About</h3>
             <p className="text-sm text-muted-foreground">
