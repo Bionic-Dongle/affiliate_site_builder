@@ -8,6 +8,7 @@ import Navbar from "@/components/site/Navbar";
 import CategoriesBar from "@/components/site/CategoriesBar";
 import TrustBadges from "@/components/site/TrustBadges";
 import LatestArticle from "@/components/site/LatestArticle";
+import FeaturedProducts from "@/components/site/FeaturedProducts";
 import { CTARenderer } from "@/components/site/CTAButton";
 import { useTemplate } from "@/contexts/TemplateContext";
 import TypographyStyles from "@/components/TypographyStyles";
@@ -35,6 +36,8 @@ const Home = () => {
         return <TrustBadges key={section.type} {...section.config} />;
       case "latest-article":
         return <LatestArticle key={section.type} {...section.config} />;
+      case "featured-products":
+        return <FeaturedProducts key={section.type} {...section.config} />;
       default:
         return null;
     }

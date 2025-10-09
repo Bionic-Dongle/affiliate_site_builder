@@ -1,4 +1,9 @@
+import { useTemplate } from "@/contexts/TemplateContext";
+import { Link } from "react-router-dom";
+
 const Footer = () => {
+  const { config } = useTemplate();
+
   return (
     <footer className="py-12 bg-muted/30 border-t">
       <div className="container mx-auto px-4">
@@ -13,18 +18,22 @@ const Footer = () => {
           <div>
             <h3 className="font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Home</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Blog</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">About</a></li>
+              {config.navbar?.navItems?.map((item) => (
+                <li key={item.id}>
+                  <Link to={item.path} className="text-muted-foreground hover:text-primary">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
           <div>
             <h3 className="font-bold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Privacy Policy</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Terms of Service</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary">Affiliate Disclaimer</a></li>
+              <li><Link to="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
+              <li><Link to="/affiliate-disclaimer" className="text-muted-foreground hover:text-primary">Affiliate Disclaimer</Link></li>
             </ul>
           </div>
           

@@ -628,7 +628,7 @@ const TemplateBuilder = () => {
     setNavItems(updatedNavItems);
   }, [pageSettings, enabledPages]);
 
-  // Sync to context whenever state changes
+  // Sync to context whenever state changes with auto-save notification
   useEffect(() => {
     const enabledSections = sections.filter((s) => s.enabled);
     updateConfig({
@@ -666,7 +666,18 @@ const TemplateBuilder = () => {
         ogImage: seoImage,
       },
     });
-  }, [sections, navbarEnabled, navItems, navbarShowSearch, navbarLogoType, navbarLogoText, navbarLogoImage, ctaLibrary, homeCtaPlacements, blogCtaPlacements, landingCtaPlacements, headingFont, bodyFont, seoTitle, seoDescription, seoImage, updateConfig]);
+
+    // Show auto-save notification
+    const timeoutId = setTimeout(() => {
+      toast({
+        title: "Changes saved to preview",
+        description: "Live site updated automatically",
+        duration: 2000,
+      });
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [sections, navbarEnabled, navItems, navbarShowSearch, navbarLogoType, navbarLogoText, navbarLogoImage, ctaLibrary, homeCtaPlacements, blogCtaPlacements, landingCtaPlacements, headingFont, bodyFont, seoTitle, seoDescription, seoImage, updateConfig, toast]);
 
   // Load saved projects on mount
   useEffect(() => {
@@ -1367,6 +1378,9 @@ const TemplateBuilder = () => {
                 value={adNetworkScript}
                 onChange={(e) => setAdNetworkScript(e.target.value)}
               />
+              <p className="text-xs text-muted-foreground">
+                For preview purposes, try this dummy ad: <code className="bg-muted px-2 py-1 rounded">&lt;div class="ad-placeholder"&gt;Ad Preview&lt;/div&gt;</code>
+              </p>
             </div>
 
             <div className="border-t pt-4 space-y-4">

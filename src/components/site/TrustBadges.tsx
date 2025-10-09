@@ -9,11 +9,11 @@ const TrustBadges = ({ heading, images }: TrustBadgesProps) => {
       <div className="container mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">{heading}</h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {images.map((image, idx) => (
             <div 
               key={idx}
-              className="aspect-square rounded-lg border bg-card hover:shadow-lg transition-shadow flex items-center justify-center p-4"
+              className="w-40 h-40 rounded-lg border bg-card hover:shadow-md transition-shadow flex items-center justify-center p-4"
             >
               {image ? (
                 <img 
