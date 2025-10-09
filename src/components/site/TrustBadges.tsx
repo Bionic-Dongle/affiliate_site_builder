@@ -4,6 +4,8 @@ interface TrustBadgesProps {
 }
 
 const TrustBadges = ({ heading, images }: TrustBadgesProps) => {
+  console.log('TrustBadges rendering with images:', images);
+  
   return (
     <section className="py-12 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -12,17 +14,14 @@ const TrustBadges = ({ heading, images }: TrustBadgesProps) => {
         <div className="flex flex-wrap justify-center gap-4 items-center">
           {images.filter(Boolean).map((image, idx) => (
             <div 
-              key={idx}
-              className="rounded-lg border bg-card hover:shadow-md transition-shadow p-3 inline-block"
+              key={`badge-${idx}`}
+              className="rounded-lg border bg-card hover:shadow-md transition-shadow p-3"
             >
               <img 
                 src={image} 
                 alt={`Trust badge ${idx + 1}`}
                 className="h-auto w-auto max-w-[150px] max-h-20 object-contain"
-                onError={(e) => {
-                  console.error(`Failed to load image: ${image}`);
-                  e.currentTarget.style.display = 'none';
-                }}
+                loading="eager"
               />
             </div>
           ))}
