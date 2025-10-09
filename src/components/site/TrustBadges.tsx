@@ -19,7 +19,7 @@ const TrustBadges = ({ heading, images }: TrustBadgesProps) => {
                 <img 
                   src={image} 
                   alt={`Trust badge ${idx + 1}`}
-                  className="h-auto w-auto max-h-32"
+                  className="h-auto w-auto max-w-[150px] max-h-20"
                 />
               ) : (
                 <div className="w-24 h-24 flex items-center justify-center">
