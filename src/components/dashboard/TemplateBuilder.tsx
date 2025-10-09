@@ -335,13 +335,11 @@ const TemplateBuilder = () => {
   };
 
   const updateImageArray = (sectionId: string, index: number, value: string) => {
-    console.log(`Updating ${sectionId} image[${index}] to:`, value);
     setSections((prev) =>
       prev.map((section) => {
         if (section.id === sectionId && section.fields.images) {
           const newImages = [...section.fields.images];
           newImages[index] = value;
-          console.log(`New images array for ${sectionId}:`, newImages);
           return { ...section, fields: { ...section.fields, images: newImages } };
         }
         return section;
