@@ -13,17 +13,18 @@ const TrustBadges = ({ heading, images }: TrustBadgesProps) => {
           {images.map((image, idx) => (
             <div 
               key={idx}
-              className="rounded-lg border bg-card hover:shadow-md transition-shadow p-3"
-              style={{ width: '140px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              className="rounded-lg border bg-card hover:shadow-md transition-shadow p-3 inline-block"
             >
               {image ? (
                 <img 
                   src={image} 
                   alt={`Trust badge ${idx + 1}`}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                  className="h-auto w-auto max-h-32"
                 />
               ) : (
-                <span className="text-xs text-muted-foreground text-center">Badge {idx + 1}</span>
+                <div className="w-24 h-24 flex items-center justify-center">
+                  <span className="text-xs text-muted-foreground text-center">Badge {idx + 1}</span>
+                </div>
               )}
             </div>
           ))}
